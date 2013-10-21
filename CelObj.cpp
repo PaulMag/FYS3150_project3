@@ -1,23 +1,30 @@
-class CelObj {
+#include <iostream>
+#include <cmath>
+#include <fstream>
+#include <armadillo>
 
-public:
-    double mass;
-    double position;
-    double velocity;
-    double force;
+using namespace std;
+using namespace arma;
 
-    CelObj(double m) {
-        mass = m;
-    }
+#include "CelObj.h"
 
-    ~CelObj()
-    {
-        //delete[] ;
-    }
+CelObj:: CelObj() {
+    position (3);
+    velocity (3);
+}
 
-    double getMass() {
-        return mass;
-    }
+CelObj:: ~CelObj() {
+    //delete[];
+}
 
+double CelObj:: getMass() {
+    return mass;
+}
 
-};
+vec CelObj:: getForce(CelObj other) {
+    /* Find the force that act upon this body from another CelObj, not included
+     * the gravity constant G.
+     */
+    vec r = other.position - position;
+    return mass * other.mass * r / pow(norm(r,2), 3);
+}
