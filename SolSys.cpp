@@ -37,7 +37,7 @@ void SolSys:: setVelocities(mat v) {
 mat SolSys:: getPositions() {
     mat x(N,3);
     for (int i=0; i<N; i++) {
-        // TODO
+        x.row(i) = bodies[i].position;
     }
     return x;
 }
@@ -45,7 +45,7 @@ mat SolSys:: getPositions() {
 mat SolSys:: getVelocities() {
     mat v(N,3);
     for (int i=0; i<N; i++) {
-        // TODO
+        v.row(i) = bodies[i].velocity;
     }
     return v;
 }
@@ -68,13 +68,14 @@ cube SolSys:: findForces() {
 
 mat SolSys:: findAccels() {
     cube F = findForces();
-    mat a(N,3);
+    mat a = zeros<mat>(N,3);
 
     for (int i=0; i<N; i++) {
-        a.row(i) = sum(F(span(i), span(), span()), dim=1) / bodies[i].mass;
-            /* TODO: Not sure if this is the correct sum. Control check later!
-             *       dim doesn't work in this context.
-             */
+        for (int j=0; j<N; j++) {
+            for (int k=0; k<N; k++) {
+                a(i,k) += F(i,j,k); // manually loop through cube
+            }
+        }
     }
     return a;
 }
