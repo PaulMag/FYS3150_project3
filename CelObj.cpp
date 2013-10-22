@@ -9,8 +9,9 @@ using namespace arma;
 #include "CelObj.h"
 
 CelObj:: CelObj() {
-    position (3);
-    velocity (3);
+    position = vec(3);
+    velocity = vec(3);
+    force    = vec(3);
 }
 
 CelObj:: ~CelObj() {
