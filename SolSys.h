@@ -20,7 +20,16 @@ public:
     SolSys();
     ~SolSys();
 
-    void findForces();
+    void setPositions (mat);
+    void setVelocities(mat);
+
+    mat getPositions ();
+    mat getVelocities();
+
+    cube findForces();
+    mat  findAccels();
+
+    void rungeKutta4();
 };
 
 #endif
