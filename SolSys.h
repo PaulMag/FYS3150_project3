@@ -20,6 +20,9 @@ public:
     SolSys();
     ~SolSys();
 
+    void addCelObj(CelObj);
+    void addCelObj(string, double, vec, vec);
+
     void setPositions (mat);
     void setVelocities(mat);
 
