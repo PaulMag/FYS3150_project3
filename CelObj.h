@@ -12,15 +12,16 @@ using namespace arma;
 class CelObj {
 
 public:
+    string name;
     double mass;
+
     vec position;
     vec velocity;
-    vec force;
 
     CelObj();
+    CelObj(string, double, vec, vec);
     ~CelObj();
 
-    double getMass();
     vec getForce(CelObj);
 };
 
