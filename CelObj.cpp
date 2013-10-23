@@ -11,15 +11,17 @@ using namespace arma;
 CelObj:: CelObj() {
     position = vec(3);
     velocity = vec(3);
-    force    = vec(3);
+}
+
+CelObj:: CelObj(string n, double m, vec x, vec v) {
+    name = n;
+    mass = m;
+    position = x;
+    velocity = v;
 }
 
 CelObj:: ~CelObj() {
     //delete[];
-}
-
-double CelObj:: getMass() {
-    return mass;
 }
 
 vec CelObj:: getForce(CelObj other) {
