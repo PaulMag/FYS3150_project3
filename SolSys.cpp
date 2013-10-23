@@ -10,6 +10,7 @@ using namespace arma;
 #include "CelObj.h"
 
 SolSys:: SolSys() {
+    N = 0;
     bodies[N];
     //CelObj a = bodies[2];
     //a.mass = 17;
@@ -20,6 +21,31 @@ SolSys:: SolSys() {
 
 SolSys:: ~SolSys() {
     delete [] bodies;
+}
+
+void SolSys:: addCelObj(CelObj body) {
+    /* Add a new CelObj to the SolSys. This is done by copying the old CelObj
+     * list "bodies" into a new list that is 1 longer, and deleting the old
+     * one. This isn't very effective, but it only needs to be done a few times
+     * at the beginning of the program, before the simulations starts.
+     */
+
+    CelObj* bodiesTemp[N+1]; // make a new, longer list
+    for (int i=0; i<N; i++) {
+        // copy all objects from the old list into a new, temprorary one
+        bodiesTemp[i] = bodies[i];
+    }
+
+    delete [] bodies;            // remove original list
+    CelObj* bodies = bodiesTemp; // remake list from the copy
+    delete [] bodiesTemp;        // the temp copy is no longer needed
+    N++;                         // now there is 1 more planet in the system
+    bodies[N] = body;            // add the new planet to the list
+}
+
+void SolSys:: addCelObj(string n, double m, vec x, vec v) {
+    CelObj newBody(n, m, x, v);
+    addCelObj(newBody);
 }
 
 void SolSys:: setPositions(mat x) {
@@ -53,6 +79,7 @@ mat SolSys:: getVelocities() {
 cube SolSys:: findForces() {
     /* Fills a matrix with the forces between every CelObj.
      */
+
     cube F = zeros<cube>(N,N,3);
     for (int i=0; i<N; i++) {
         for (int j=0; j<i; j++) {
@@ -95,13 +122,13 @@ void SolSys:: rungeKutta4() {
     setPositions(x1);
     mat a1 = findAccels();
 
-    mat v2 = v1 + a1 * h2;
-    mat x2 = v1 + v1 * h2;
+    mat v2 = v0 + a1 * h2;
+    mat x2 = v0 + v1 * h2;
     setPositions(x2);
     mat a2 = findAccels();
 
-    mat v3 = v2 + a2 * h;
-    mat x3 = x2 + x2 * h;
+    mat v3 = v0 + a2 * h;
+    mat x3 = x0 + v2 * h;
     setPositions(x3);
     mat a3 = findAccels();
 
