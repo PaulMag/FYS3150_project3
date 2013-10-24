@@ -15,7 +15,7 @@ class SolSys {
 
 public:
     int N; // no of bodies
-    CelObj* bodies;
+    vector<CelObj> bodies;
 
     SolSys();
     ~SolSys();
