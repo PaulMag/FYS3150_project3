@@ -22,6 +22,10 @@ public:
 
     void addCelObj(CelObj);
     void addCelObj(string, double, vec, vec);
+    void addCelObj(string, double, double, double, double,
+                                   double, double, double);
+    void addCelObj(string, double, double, double,
+                                   double, double);
 
     void setPositions (mat);
     void setVelocities(mat);

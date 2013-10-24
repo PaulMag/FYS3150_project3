@@ -38,9 +38,24 @@ void SolSys:: addCelObj(CelObj body) {
     bodies[N] = body;            // add the new planet to the list
 }
 
-void SolSys:: addCelObj(string n, double m, vec x, vec v) {
+void SolSys:: addCelObj(string n, double m, vec x, vec y) {
     CelObj newBody(n, m, x, v);
     addCelObj(newBody);
+}
+
+void SolSys:: addCelObj(string n, double m, double x0, double x1, double x2,
+                                            double v0, double v1, double v2) {
+    vec x;
+    x << x0 << x1 << x2;
+    vec v;
+    v << v0 << v1 << v2;
+    CelObj newBody(n, m, x, v);
+    addCelObj(newBody);
+}
+
+void SolSys:: addCelObj(string n, double m, double x0, double x1,
+                                            double v0, double v1) {
+    addCelObj(n, m, x0, x1, 0, v0, v1, 0);
 }
 
 void SolSys:: setPositions(mat x) {
@@ -106,7 +121,6 @@ mat SolSys:: findAccels() {
 void SolSys:: rungeKutta4(double h) {
     /* Forwards every Celestial Object in the Solar System one timestep with
      * the RungeKutta4 method.
-     * TODO: Implement timestep h somehow.
      */
     double h2 = h * 0.5; // too save a few calculations
     double h6 = h / 6.0;
