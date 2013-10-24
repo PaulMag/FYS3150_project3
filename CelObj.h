@@ -18,11 +18,16 @@ public:
     vec position;
     vec velocity;
 
+    ofstream outfile;
+
     CelObj();
     CelObj(string, double, vec, vec);
     ~CelObj();
 
     vec getForce(CelObj);
+
+    void makeOutfile(string);
+    void writeData();
 };
 
 #endif
