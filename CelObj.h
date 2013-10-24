@@ -19,6 +19,7 @@ public:
     vec velocity;
 
     ofstream* outfile;
+    bool outfileOpen;
 
     CelObj();
     CelObj(string, double, vec, vec);
