@@ -25,9 +25,12 @@ CelObj:: CelObj(string n, double m, vec x, vec v) {
 }
 
 CelObj:: ~CelObj() {
-    if (outfileOpen) {
-        outfile->close(); // avoid closing if it was never opened
+    /* Destructor is called all the time for some reason.
+    if (outfileOpen) { // avoid closing if it was never opened
+        outfile->close();
+        cout << name << ".dat was closed." << endl;
     }
+    */
 }
 
 vec CelObj:: getForce(CelObj other) {
