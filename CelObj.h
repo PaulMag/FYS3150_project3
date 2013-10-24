@@ -18,7 +18,7 @@ public:
     vec position;
     vec velocity;
 
-    ofstream outfile;
+    ofstream* outfile;
 
     CelObj();
     CelObj(string, double, vec, vec);
