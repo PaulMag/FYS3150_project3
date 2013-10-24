@@ -36,6 +36,7 @@ public:
     cube findForces();
     mat  findAccels();
 
+    void makeDataFiles();
     void makeDataFiles(string);
 
     void rungeKutta4();
