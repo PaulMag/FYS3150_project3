@@ -10,13 +10,8 @@ using namespace arma;
 #include "CelObj.h"
 
 SolSys:: SolSys() {
-    N = 0;
+    N = 0; // number of celestial bodies
     bodies[N];
-    //CelObj a = bodies[2];
-    //a.mass = 17;
-    //cout << a.mass << endl;
-    //CelObj b = bodies[2];
-    //cout << b.mass << endl;
 }
 
 SolSys:: ~SolSys() {
@@ -30,7 +25,7 @@ void SolSys:: addCelObj(CelObj body) {
      * at the beginning of the program, before the simulations starts.
      */
 
-    CelObj* bodiesTemp[N+1]; // make a new, longer list
+    CelObj* bodiesTemp = new CelObj[N+1]; // make a new, longer list
     for (int i=0; i<N; i++) {
         // copy all objects from the old list into a new, temprorary one
         bodiesTemp[i] = bodies[i];
@@ -112,6 +107,8 @@ void SolSys:: rungeKutta4() {
      * the RungeKutta4 method.
      * TODO: Implement timestep h somehow.
      */
+    double h2 = h * 0.5; // too save a few calculations
+    double h6 = h / 6.0;
 
     mat v0 = getVelocities();
     mat x0 = getPositions();
@@ -132,6 +129,17 @@ void SolSys:: rungeKutta4() {
     setPositions(x3);
     mat a3 = findAccels();
 
-    setVelocities(v0 + (1./6) * (a0 + 2*a1 + 2*a2 + a3) * h);
-    setPositions (x0 + (1./6) * (v0 + 2*v1 + 2*v2 + v3) * h);
+    setVelocities(v0 + (a0 + 2*a1 + 2*a2 + a3) * h6);
+    setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
+}
+
+void SolSys:: moveSystem(int stepN, double h) {
+    /* Solve system for a given no of steps and a timestep.
+     */
+    for (int j=0; j<stepN; j++) {
+        rungeKutta4();
+        for (int i=0; i<N; i++) {
+            bodies[i].writeData();
+        }
+    }
 }
