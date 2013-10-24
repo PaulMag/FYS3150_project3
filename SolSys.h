@@ -32,10 +32,15 @@ public:
     cube findForces();
     mat  findAccels();
 
+    void makeDataFiles(string);
+
     void rungeKutta4();
-    void moveSystem(int stepN, double h);
-    void moveSystem(double time, int stepN);
-    void moveSystem(double time, double h);
+    void rungeKutta4(double h);
+
+    void moveSystem(double, int,    bool);
+    void moveSystem(double, double, bool);
+    void moveSystem(double, int);
+    void moveSystem(double, double);
 };
 
 #endif
