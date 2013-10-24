@@ -84,7 +84,8 @@ cube SolSys:: findForces() {
     F.slice(0) -= F.slice(0).t(); // mirror forces in the matrix
     F.slice(1) -= F.slice(1).t();
     F.slice(2) -= F.slice(2).t();
-    F *= G; // multiply with gravity constant. TODO: Add gravity constant G
+    double G = 1.0; // TODO: Implement gravity constant G properly!!!
+    F *= G; // multiply with gravity constant
     return F;
 }
 
@@ -102,7 +103,7 @@ mat SolSys:: findAccels() {
     return a;
 }
 
-void SolSys:: rungeKutta4() {
+void SolSys:: rungeKutta4(double h) {
     /* Forwards every Celestial Object in the Solar System one timestep with
      * the RungeKutta4 method.
      * TODO: Implement timestep h somehow.
@@ -133,13 +134,40 @@ void SolSys:: rungeKutta4() {
     setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
 }
 
-void SolSys:: moveSystem(int stepN, double h) {
+void SolSys:: makeDataFiles(string location) {
+    for (int i=0; i<N; i++) {
+        bodies[i].makeOutfile(location);
+    }
+}
+
+void SolSys:: moveSystem(double time, int stepN, bool output) {
     /* Solve system for a given no of steps and a timestep.
      */
-    for (int j=0; j<stepN; j++) {
-        rungeKutta4();
-        for (int i=0; i<N; i++) {
-            bodies[i].writeData();
+    double h = time / stepN;
+    if (output) {
+        for (int j=0; j<stepN; j++) {
+            rungeKutta4(h);
+            for (int i=0; i<N; i++) {
+                bodies[i].writeData();
+            }
         }
     }
+    else {
+        for (int j=0; j<stepN; j++) {
+            rungeKutta4(h);
+        }
+    }
+}
+
+void SolSys:: moveSystem(double time, double h, bool output) {
+    int stepN = (int)(time / h + 0.5); // round to int
+    moveSystem(time, stepN, output);
+}
+
+void SolSys:: moveSystem(double time, int stepN) {
+    moveSystem(time, stepN, true); // default value is true
+}
+
+void SolSys:: moveSystem(double time, double h) {
+    moveSystem(time, h, true); // default value is true
 }
