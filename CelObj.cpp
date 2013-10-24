@@ -21,7 +21,7 @@ CelObj:: CelObj(string n, double m, vec x, vec v) {
 }
 
 CelObj:: ~CelObj() {
-    //delete[];
+    outfile.close();
 }
 
 vec CelObj:: getForce(CelObj other) {
@@ -30,4 +30,12 @@ vec CelObj:: getForce(CelObj other) {
      */
     vec r = other.position - position;
     return mass * other.mass * r / pow(norm(r,2), 3);
+}
+
+void CelObj:: makeOutfile(string location) {
+    outfile.open(location + name + ".dat");
+}
+
+void CelObj:: writeData() {
+    outfile << position(0) << "," << position(1) << "," << position(2) << endl;
 }
