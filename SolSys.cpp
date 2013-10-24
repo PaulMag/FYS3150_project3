@@ -12,11 +12,11 @@ using namespace arma;
 SolSys:: SolSys() {
     N = 0; // number of celestial bodies
     //bodies[N];
-    bodies = new CelObj[N];
+    //bodies = new CelObj[N];
 }
 
 SolSys:: ~SolSys() {
-    delete [] bodies;
+    vector<CelObj>().swap(bodies);
 }
 
 void SolSys:: addCelObj(CelObj body) {
@@ -25,20 +25,7 @@ void SolSys:: addCelObj(CelObj body) {
      * one. This isn't very effective, but it only needs to be done a few times
      * at the beginning of the program, before the simulations starts.
      */
-
-    CelObj* bodiesTemp = new CelObj[N+1]; // make a new, longer list
-    for (int i=0; i<N; i++) {
-        bodiesTemp[i] = bodies[i]; // copy into temp array
-    }
-    delete [] bodies; // remove original list
-
-    CelObj* bodies = new CelObj[N+1];
-    for (int i=0; i<N; i++) {
-        bodies[i] = bodiesTemp[i]; // remake list from the copy
-    }
-    delete [] bodiesTemp; // the temp copy is no longer needed
-
-    bodies[N] = body; // add the new planet to the new spot at end of list
+    bodies.push_back(body);
     N++;              // now there is 1 more planet in the system
 }
 
