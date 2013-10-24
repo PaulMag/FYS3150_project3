@@ -11,7 +11,8 @@ using namespace arma;
 
 SolSys:: SolSys() {
     N = 0; // number of celestial bodies
-    bodies[N];
+    //bodies[N];
+    bodies = new CelObj[N];
 }
 
 SolSys:: ~SolSys() {
@@ -38,8 +39,8 @@ void SolSys:: addCelObj(CelObj body) {
     bodies[N] = body;            // add the new planet to the list
 }
 
-void SolSys:: addCelObj(string n, double m, vec x, vec y) {
-    CelObj newBody(n, m, x, v);
+void SolSys:: addCelObj(string n, double m, vec x, vec v) {
+    CelObj newBody = CelObj(n, m, x, v);
     addCelObj(newBody);
 }
 
