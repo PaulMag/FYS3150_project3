@@ -39,9 +39,7 @@ vec CelObj:: getForce(CelObj other) {
 }
 
 void CelObj:: makeOutfile(string location) {
-    ostringstream oss;
-    oss << location << name << ".dat";
-    outfile->open(oss.str().c_str()); // convert string to array of chars
+    outfile  = new ofstream((location + name + ".dat").c_str()); // thx jaremikb
     outfileOpen = true;
 }
 
