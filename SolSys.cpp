@@ -28,15 +28,18 @@ void SolSys:: addCelObj(CelObj body) {
 
     CelObj* bodiesTemp = new CelObj[N+1]; // make a new, longer list
     for (int i=0; i<N; i++) {
-        // copy all objects from the old list into a new, temprorary one
-        bodiesTemp[i] = bodies[i];
+        bodiesTemp[i] = bodies[i]; // copy into temp array
     }
+    delete [] bodies; // remove original list
 
-    delete [] bodies;            // remove original list
-    CelObj* bodies = bodiesTemp; // remake list from the copy
-    delete [] bodiesTemp;        // the temp copy is no longer needed
-    N++;                         // now there is 1 more planet in the system
-    bodies[N] = body;            // add the new planet to the list
+    CelObj* bodies = new CelObj[N+1];
+    for (int i=0; i<N; i++) {
+        bodies[i] = bodiesTemp[i]; // remake list from the copy
+    }
+    delete [] bodiesTemp; // the temp copy is no longer needed
+
+    bodies[N] = body; // add the new planet to the new spot at end of list
+    N++;              // now there is 1 more planet in the system
 }
 
 void SolSys:: addCelObj(string n, double m, vec x, vec v) {
