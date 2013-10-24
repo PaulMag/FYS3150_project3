@@ -33,6 +33,9 @@ public:
     mat  findAccels();
 
     void rungeKutta4();
+    void moveSystem(int stepN, double h);
+    void moveSystem(double time, int stepN);
+    void moveSystem(double time, double h);
 };
 
 #endif
