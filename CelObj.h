@@ -19,7 +19,6 @@ public:
     vec velocity;
 
     ofstream* outfile;
-    bool outfileOpen;
 
     CelObj();
     CelObj(string, double, vec, vec);
@@ -28,6 +27,7 @@ public:
     vec getForce(CelObj);
 
     void makeOutfile(string);
+    void closeOutfile();
     void writeData();
 };
 

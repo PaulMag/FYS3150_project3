@@ -13,7 +13,6 @@ using namespace arma;
 CelObj:: CelObj() {
     position = vec(3);
     velocity = vec(3);
-    outfileOpen = false;
 }
 
 CelObj:: CelObj(string n, double m, vec x, vec v) {
@@ -21,7 +20,6 @@ CelObj:: CelObj(string n, double m, vec x, vec v) {
     mass = m;
     position = x;
     velocity = v;
-    outfileOpen = false;
 }
 
 CelObj:: ~CelObj() {
@@ -42,8 +40,11 @@ vec CelObj:: getForce(CelObj other) {
 }
 
 void CelObj:: makeOutfile(string location) {
-    outfile  = new ofstream((location + name + ".dat").c_str()); // thx jaremikb
-    outfileOpen = true;
+    outfile  = new ofstream(location.c_str());
+}
+
+void CelObj:: closeOutfile() {
+    outfile->close();
 }
 
 void CelObj:: writeData() {

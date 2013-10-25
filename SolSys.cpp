@@ -158,23 +158,38 @@ cout << "ONE5" << endl;
     setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
 cout << "ONE6" << endl;
 }
-
+/*
 void SolSys:: makeDataFiles() {
     makeDataFiles("");
 }
 
 void SolSys:: makeDataFiles(string location) {
     for (int i=0; i<N; i++) {
-        bodies[i].makeOutfile(location);
+        bodies[i].makeOutfile(location + "/" + bodies[i].name + ".dat");
     }
 }
+*/
 
-void SolSys:: moveSystem(double time, int stepN, bool output) {
+void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
     /* Solve system for a given no of steps and a timestep.
      */
+
     double h = time / stepN;
-    cout << "ONE" << endl;
+
     if (output) {
+
+        outfile  = new ofstream(("data/" + location + "/info.dat").c_str());
+        *outfile << time << "," << stepN << "," << 3 << endl;
+        for (int i=0; i<N; i++) {
+            *outfile << bodies[i].name << ",";
+        }
+        *outfile << endl;
+        outfile->close();
+
+        for (int i=0; i<N; i++) {
+            bodies[i].makeOutfile("data/" + location + "/obj" + SSTR(i) + ".dat");
+        }
+
         cout << "NO" << endl;
         for (int j=0; j<stepN; j++) {
             rungeKutta4(h);
@@ -189,17 +204,20 @@ void SolSys:: moveSystem(double time, int stepN, bool output) {
             rungeKutta4(h);
         }
     }
+    for (int i=0; i<N; i++) {
+        bodies[i].closeOutfile();
+    }
 }
 
-void SolSys:: moveSystem(double time, double h, bool output) {
+void SolSys:: moveSystem(string location, double time, double h, bool output) {
     int stepN = (int)(time / h + 0.5); // round to int
-    moveSystem(time, stepN, output);
+    moveSystem(location, time, stepN, output);
 }
 
-void SolSys:: moveSystem(double time, int stepN) {
-    moveSystem(time, stepN, true); // default value is true
+void SolSys:: moveSystem(string location, double time, int stepN) {
+    moveSystem(location, time, stepN, true); // default value is true
 }
 
-void SolSys:: moveSystem(double time, double h) {
-    moveSystem(time, h, true); // default value is true
+void SolSys:: moveSystem(string location, double time, double h) {
+    moveSystem(location, time, h, true); // default value is true
 }

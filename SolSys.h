@@ -11,11 +11,17 @@ using namespace arma;
 
 #include "CelObj.h"
 
+#include <sstream>
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
 class SolSys {
 
 public:
     int N; // no of bodies
     vector<CelObj> bodies;
+
+    ofstream* outfile;
 
     SolSys();
     ~SolSys();
@@ -42,10 +48,10 @@ public:
     void rungeKutta4();
     void rungeKutta4(double h);
 
-    void moveSystem(double, int,    bool);
-    void moveSystem(double, double, bool);
-    void moveSystem(double, int);
-    void moveSystem(double, double);
+    void moveSystem(string, double, int,    bool);
+    void moveSystem(string, double, double, bool);
+    void moveSystem(string, double, int);
+    void moveSystem(string, double, double);
 };
 
 #endif
