@@ -11,8 +11,6 @@ using namespace arma;
 
 SolSys:: SolSys() {
     N = 0; // number of celestial bodies
-    //bodies[N];
-    //bodies = new CelObj[N];
 }
 
 SolSys:: ~SolSys() {
@@ -59,22 +57,18 @@ void SolSys:: setPositions(mat x) {
 
 void SolSys:: setVelocities(mat v) {
     for (int i=0; i<N; i++) {
-        cout << "SETVEL" << endl;
         for (int k=0; k<3; k++) {
             bodies[i].position[k] = v(i,k);
         }
-        cout << "SETVEL_WIN" << endl;
     }
 }
 
 mat SolSys:: getPositions() {
     mat x(N,3);
     for (int i=0; i<N; i++) {
-        cout << "GETPOS" << endl;
         for (int k=0; k<3; k++) {
             x(i,k) = bodies[i].position[k];
         }
-        cout << "GETPOS_WIN" << endl;
     }
     return x;
 }
@@ -82,11 +76,9 @@ mat SolSys:: getPositions() {
 mat SolSys:: getVelocities() {
     mat v(N,3);
     for (int i=0; i<N; i++) {
-        cout << "GETVAL" << endl;
         for (int k=0; k<3; k++) {
             v(i,k) = bodies[i].velocity[k];
         }
-        cout << "GETVAL_WIN" << endl;
     }
     return v;
 }
@@ -98,19 +90,17 @@ cube SolSys:: findForces() {
     cube F = zeros<cube>(N,N,3);
     for (int i=0; i<N; i++) {
         for (int j=0; j<i; j++) {
-            cout << "FORCE" << endl;
+
             vec f = bodies[i].getForce(bodies[j]);
             for (int k=0; k<3; k++) {
                 F(i,j,k) = f(k);
             }
-            cout << "FORCE_WIN" << endl;
         }
     }
     F.slice(0) -= F.slice(0).t(); // mirror forces in the matrix
     F.slice(1) -= F.slice(1).t();
     F.slice(2) -= F.slice(2).t();
-    double G = 1.0; // TODO: Implement gravity constant G properly!!!
-    F *= G; // multiply with gravity constant
+    F *= 0.00011854924136738324; // multiply with scaled gravity constant
     return F;
 }
 
@@ -134,41 +124,29 @@ void SolSys:: rungeKutta4(double h) {
      */
     double h2 = h * 0.5; // too save a few calculations
     double h6 = h / 6.0;
-cout << "ONE1" << endl;
+
     mat v0 = getVelocities();
     mat x0 = getPositions();
     mat a0 = findAccels();
-cout << "ONE2" << endl;
+
     mat v1 = v0 + a0 * h2;
     mat x1 = x0 + v0 * h2;
     setPositions(x1);
     mat a1 = findAccels();
-cout << "ONE3" << endl;
+
     mat v2 = v0 + a1 * h2;
     mat x2 = v0 + v1 * h2;
     setPositions(x2);
     mat a2 = findAccels();
-cout << "ONE4" << endl;
+
     mat v3 = v0 + a2 * h;
     mat x3 = x0 + v2 * h;
     setPositions(x3);
     mat a3 = findAccels();
-cout << "ONE5" << endl;
+
     setVelocities(v0 + (a0 + 2*a1 + 2*a2 + a3) * h6);
     setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
-cout << "ONE6" << endl;
 }
-/*
-void SolSys:: makeDataFiles() {
-    makeDataFiles("");
-}
-
-void SolSys:: makeDataFiles(string location) {
-    for (int i=0; i<N; i++) {
-        bodies[i].makeOutfile(location + "/" + bodies[i].name + ".dat");
-    }
-}
-*/
 
 void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
     /* Solve system for a given no of steps and a timestep.
@@ -190,7 +168,6 @@ void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
             bodies[i].makeOutfile("data/" + location + "/obj" + SSTR(i) + ".dat");
         }
 
-        cout << "NO" << endl;
         for (int j=0; j<stepN; j++) {
             rungeKutta4(h);
             for (int i=0; i<N; i++) {
@@ -200,7 +177,6 @@ void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
     }
     else {
         for (int j=0; j<stepN; j++) {
-            cout << "YES" << endl;
             rungeKutta4(h);
         }
     }
