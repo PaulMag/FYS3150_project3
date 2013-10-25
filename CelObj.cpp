@@ -36,7 +36,9 @@ vec CelObj:: getForce(CelObj other) {
      * the gravity constant G.
      */
     vec r = other.position - position;
-    return mass * other.mass * r / pow(norm(r,2), 3);
+    return mass * other.mass * r / pow(norm(r,2), 3) * 0.00011854924136738324;
+   // vec r = position;
+   // return - 0.00011854924136738324 * 333054.253182 * r * pow(norm(r,2), -3);
 }
 
 void CelObj:: makeOutfile(string location) {

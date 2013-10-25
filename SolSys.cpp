@@ -110,11 +110,16 @@ mat SolSys:: findAccels() {
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
+            vec tempConst = bodies[0].getForce(bodies[1]);
             for (int k=0; k<N; k++) {
-                a(i,k) += F(i,j,k); // manually loop through cube
+                a(i,k) = F(i,j,k); // manually loop through cube
             }
         }
     }
+    /*vec tempConst = bodies[0].getForce(bodies[0]);
+    for (int k=0; k<N; k++) {
+        a(0,k) = tempConst[k];
+    }*/
     return a;
 }
 
@@ -122,9 +127,25 @@ void SolSys:: rungeKutta4(double h) {
     /* Forwards every Celestial Object in the Solar System one timestep with
      * the RungeKutta4 method.
      */
-    double h2 = h * 0.5; // too save a few calculations
+    double h2 = h * 0.5; // to save a few calculations
     double h6 = h / 6.0;
 
+    vec a1(3);
+    vec a2(3);
+    //for (int k=0; k<N; k++) {
+    //    a(k) = findAccels()[0,k];
+    //}
+        a1 = bodies[0].getForce(bodies[1]);
+        a2 = bodies[1].getForce(bodies[0]) / bodies[1].mass;
+    vec v1 = bodies[0].velocity + a1 * h;
+    vec v2 = bodies[1].velocity + a2 * h;
+    vec x1 = bodies[0].position + v1 * h;
+    vec x2 = bodies[1].position + v2 * h;
+    bodies[0].velocity = v1;
+    bodies[1].velocity = v2;
+    bodies[0].position = x1;
+    bodies[1].position = x2;
+/*
     mat v0 = getVelocities();
     mat x0 = getPositions();
     mat a0 = findAccels();
@@ -145,7 +166,7 @@ void SolSys:: rungeKutta4(double h) {
     mat a3 = findAccels();
 
     setVelocities(v0 + (a0 + 2*a1 + 2*a2 + a3) * h6);
-    setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
+    setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);*/
 }
 
 void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
