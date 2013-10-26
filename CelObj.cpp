@@ -15,7 +15,7 @@ CelObj:: CelObj() {
     velocity = vec(3);
 }
 
-CelObj:: CelObj(string n, double m, vec x, vec v) {
+CelObj:: CelObj(string n, double m, rowvec x, rowvec v) {
     name = n;
     mass = m;
     position = x;
@@ -31,11 +31,11 @@ CelObj:: ~CelObj() {
     */
 }
 
-vec CelObj:: getForce(CelObj other) {
+rowvec CelObj:: getForce(CelObj other) {
     /* Find the force that act upon this body from another CelObj, not included
      * the gravity constant G.
      */
-    vec r = other.position - position;
+    rowvec r = other.position - position;
     return mass * other.mass * r / pow(norm(r,2), 3);
 }
 

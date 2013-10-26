@@ -27,16 +27,16 @@ void SolSys:: addCelObj(CelObj body) {
     N++;              // now there is 1 more planet in the system
 }
 
-void SolSys:: addCelObj(string n, double m, vec x, vec v) {
+void SolSys:: addCelObj(string n, double m, rowvec x, rowvec v) {
     CelObj newBody = CelObj(n, m, x, v);
     addCelObj(newBody);
 }
 
 void SolSys:: addCelObj(string n, double m, double x0, double x1, double x2,
                                             double v0, double v1, double v2) {
-    vec x;
+    rowvec x;
     x << x0 << x1 << x2;
-    vec v;
+    rowvec v;
     v << v0 << v1 << v2;
     CelObj newBody(n, m, x, v);
     addCelObj(newBody);
@@ -91,7 +91,7 @@ cube SolSys:: findForces() {
     for (int i=0; i<N; i++) {
         for (int j=0; j<i; j++) {
 
-            vec f = bodies[i].getForce(bodies[j]);
+            rowvec f = bodies[i].getForce(bodies[j]);
             for (int k=0; k<3; k++) {
                 F(i,j,k) = f(k);
             }
