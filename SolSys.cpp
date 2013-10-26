@@ -100,7 +100,7 @@ cube SolSys:: findForces() {
     F.slice(0) -= F.slice(0).t(); // mirror forces in the matrix
     F.slice(1) -= F.slice(1).t();
     F.slice(2) -= F.slice(2).t();
-    F *= 0.00011854924136738324; // multiply with scaled gravity constant
+    //F *= 0.00011854924136738324; // multiply with scaled gravity constant
     return F;
 }
 
@@ -110,15 +110,20 @@ mat SolSys:: findAccels() {
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
-            vec tempConst = bodies[0].getForce(bodies[1]);
+            //vec tempConst = bodies[0].getForce(bodies[1]);
             for (int k=0; k<N; k++) {
                 a(i,k) = F(i,j,k); // manually loop through cube
             }
         }
     }
-    /*vec tempConst = bodies[0].getForce(bodies[0]);
-    for (int k=0; k<N; k++) {
-        a(0,k) = tempConst[k];
+    //a(1,0) /= bodies[1].mass;
+    //a(1,1) /= bodies[1].mass;
+    //a(1,2) /= bodies[1].mass;
+    /*vec tempConst1 = bodies[0].getForce(bodies[1]);
+    vec tempConst2 = bodies[1].getForce(bodies[0]);
+    for (int k=0; k<3; k++) {
+        a(0,k) = tempConst1[k] / bodies[0].mass;
+        a(1,k) = tempConst2[k] / bodies[1].mass;
     }*/
     return a;
 }
@@ -132,17 +137,39 @@ void SolSys:: rungeKutta4(double h) {
 
     vec a1(3);
     vec a2(3);
-    //for (int k=0; k<N; k++) {
-    //    a(k) = findAccels()[0,k];
-    //}
-        a1 = bodies[0].getForce(bodies[1]);
-        a2 = bodies[1].getForce(bodies[0]) / bodies[1].mass;
-    vec v1 = bodies[0].velocity + a1 * h;
-    vec v2 = bodies[1].velocity + a2 * h;
+    for (int k=0; k<3; k++) {
+        a1(k) = findAccels()[0,k];// / bodies[0].mass;
+        a2(k) = findAccels()[1,k] / bodies[1].mass;
+        //cout << a1 << endl;
+    }
+        //a1 = bodies[0].getForce(bodies[1]);
+        //a2 = bodies[1].getForce(bodies[0]) / bodies[1].mass;
+
+    cube F = findForces();
+    mat a = zeros<mat>(3,N);
+
+    for (int i=0; i<N; i++) {
+        for (int j=0; j<N; j++) {
+            //vec tempConst = bodies[0].getForce(bodies[1]);
+            for (int k=0; k<N; k++) {
+                a(k,i) += F(i,j,k); // manually loop through cube
+            }
+        }
+    }
+
+    vec v1 = zeros<vec>(3);
+    vec v2 = zeros<vec>(3);
+
+    for (int k=0; k<3; k++) {
+        v1 = bodies[0].velocity + a[0,k] * h;
+        v2 = bodies[1].velocity + a[1,k] * h;
+    }
     vec x1 = bodies[0].position + v1 * h;
     vec x2 = bodies[1].position + v2 * h;
+
     bodies[0].velocity = v1;
     bodies[1].velocity = v2;
+
     bodies[0].position = x1;
     bodies[1].position = x2;
 /*
