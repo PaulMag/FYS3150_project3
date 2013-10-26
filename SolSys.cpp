@@ -110,11 +110,14 @@ mat SolSys:: findAccels() {
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
-            for (int k=0; k<N; k++) {
-                a(i,k) += F(i,j,k); // manually loop through cube
+            if (i != j) {
+                for (int k=0; k<3; k++) {
+                    a(i,k) += F(i,j,k) / bodies[i].mass;
+                }
             }
         }
     }
+
     return a;
 }
 
@@ -127,11 +130,31 @@ void SolSys:: rungeKutta4(double h) {
 
     mat v0 = getVelocities();
     mat x0 = getPositions();
-    mat a0 = findAccels();
 
-    mat v1 = v0 + a0 * h2;
-    mat x1 = x0 + v0 * h2;
+    mat a0 = zeros<mat>(N,3);
+
+    for (int i=0; i<N; i++) {
+        for (int j=0; j<N; j++) {
+            if (i != j) {
+                rowvec r = bodies[j].position - bodies[i].position;
+                rowvec f = 0.00011854924136738324
+                           * bodies[i].mass * bodies[j].mass * r
+                           / ( norm(r,2) * norm(r,2) * norm(r,2) );
+                a0.row(i) += f;
+                /*rowvec temp = bodies[i].getForce(bodies[j]) / bodies[i].mass;
+                for (int k=0; k<3; k++) {
+                    a0(i,k) += temp(k);
+                }*/
+            }
+        }
+    }
+
+    mat v1 = v0 + a0 * h;
+    mat x1 = x0 + v1 * h;
+    setVelocities(v1);
     setPositions(x1);
+
+    /*
     mat a1 = findAccels();
 
     mat v2 = v0 + a1 * h2;
@@ -145,7 +168,7 @@ void SolSys:: rungeKutta4(double h) {
     mat a3 = findAccels();
 
     setVelocities(v0 + (a0 + 2*a1 + 2*a2 + a3) * h6);
-    setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
+    setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);*/
 }
 
 void SolSys:: moveSystem(string location, double time, int stepN, bool output) {

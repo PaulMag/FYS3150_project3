@@ -36,7 +36,8 @@ rowvec CelObj:: getForce(CelObj other) {
      * the gravity constant G.
      */
     rowvec r = other.position - position;
-    return mass * other.mass * r / pow(norm(r,2), 3);
+    //cout << 5 << r << endl;
+    return mass * other.mass * r / pow(norm(r,2), 3) * 0.00011854924136738324;
 }
 
 void CelObj:: makeOutfile(string location) {
