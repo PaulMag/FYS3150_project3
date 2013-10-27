@@ -58,7 +58,7 @@ void SolSys:: setPositions(mat x) {
 void SolSys:: setVelocities(mat v) {
     for (int i=0; i<N; i++) {
         for (int k=0; k<3; k++) {
-            bodies[i].position[k] = v(i,k);
+            bodies[i].velocity[k] = v(i,k);
         }
     }
 }
@@ -114,6 +114,7 @@ mat SolSys:: findAccels() {
                 a(i,k) += F(i,j,k); // manually loop through cube
             }
         }
+        a.row(i) /= bodies[i].mass;
     }
     return a;
 }
