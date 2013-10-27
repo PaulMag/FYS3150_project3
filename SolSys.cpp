@@ -24,7 +24,7 @@ void SolSys:: addCelObj(CelObj body) {
      * at the beginning of the program, before the simulations starts.
      */
     bodies.push_back(body);
-    N++;              // now there is 1 more planet in the system
+    N++; // now there is 1 more planet in the system
 }
 
 void SolSys:: addCelObj(string n, double m, rowvec x, rowvec v) {
@@ -49,26 +49,20 @@ void SolSys:: addCelObj(string n, double m, double x0, double x1,
 
 void SolSys:: setPositions(mat x) {
     for (int i=0; i<N; i++) {
-        //for (int k=0; k<3; k++) {
             bodies[i].position = x.row(i);
-        //}
     }
 }
 
 void SolSys:: setVelocities(mat v) {
     for (int i=0; i<N; i++) {
-        //for (int k=0; k<3; k++) {
             bodies[i].velocity = v.row(i);
-        //}
     }
 }
 
 mat SolSys:: getPositions() {
     mat x(N,3);
     for (int i=0; i<N; i++) {
-        //for (int k=0; k<3; k++) {
             x.row(i) = bodies[i].position;
-        //}
     }
     return x;
 }
@@ -100,7 +94,7 @@ cube SolSys:: findForces() {
     F.slice(0) -= F.slice(0).t(); // mirror forces in the matrix
     F.slice(1) -= F.slice(1).t();
     F.slice(2) -= F.slice(2).t();
-    F *= 0.00011854924136738324; // multiply with scaled gravity constant
+    F *= 0.00011854924136738324; // multiply with earthM scaled gravity constant
     return F;
 }
 
@@ -110,7 +104,7 @@ mat SolSys:: findAccels() {
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
-            for (int k=0; k<N; k++) {
+            for (int k=0; k<3; k++) {
                 a(i,k) += F(i,j,k); // manually loop through cube
             }
         }
