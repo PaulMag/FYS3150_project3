@@ -49,20 +49,20 @@ void SolSys:: addCelObj(string n, double m, double x0, double x1,
 
 void SolSys:: setPositions(mat x) {
     for (int i=0; i<N; i++) {
-            bodies[i].position = x.row(i);
+        bodies[i].position = x.row(i);
     }
 }
 
 void SolSys:: setVelocities(mat v) {
     for (int i=0; i<N; i++) {
-            bodies[i].velocity = v.row(i);
+        bodies[i].velocity = v.row(i);
     }
 }
 
 mat SolSys:: getPositions() {
     mat x(N,3);
     for (int i=0; i<N; i++) {
-            x.row(i) = bodies[i].position;
+        x.row(i) = bodies[i].position;
     }
     return x;
 }
@@ -70,9 +70,7 @@ mat SolSys:: getPositions() {
 mat SolSys:: getVelocities() {
     mat v(N,3);
     for (int i=0; i<N; i++) {
-        //for (int k=0; k<3; k++) {
-            v.row(i) = bodies[i].velocity;
-        //}
+        v.row(i) = bodies[i].velocity;
     }
     return v;
 }
@@ -80,20 +78,18 @@ mat SolSys:: getVelocities() {
 cube SolSys:: findForces() {
     /* Fills a matrix with the forces between every CelObj.
      */
+    cube F = zeros<cube>(N,3,N);
 
-    cube F = zeros<cube>(N,N,3);
     for (int i=0; i<N; i++) {
         for (int j=0; j<i; j++) {
 
             rowvec f = bodies[i].getForce(bodies[j]);
             for (int k=0; k<3; k++) {
-                F(i,j,k) = f(k);
+                F(i,k,j) =   f(k);
+                F(j,k,i) = - f(k); // same force on both in CelObj pair
             }
         }
     }
-    F.slice(0) -= F.slice(0).t(); // mirror forces in the matrix
-    F.slice(1) -= F.slice(1).t();
-    F.slice(2) -= F.slice(2).t();
     F *= 0.00011854924136738324; // multiply with earthM scaled gravity constant
     return F;
 }
@@ -102,12 +98,10 @@ mat SolSys:: findAccels() {
     cube F = findForces();
     mat a = zeros<mat>(N,3);
 
+    for (int j=0; j<N; j++) {
+        a += F.slice(j); // sum all forces on each CelObj
+    }
     for (int i=0; i<N; i++) {
-        for (int j=0; j<N; j++) {
-            for (int k=0; k<3; k++) {
-                a(i,k) += F(i,j,k); // manually loop through cube
-            }
-        }
         a.row(i) /= bodies[i].mass;
     }
     return a;
