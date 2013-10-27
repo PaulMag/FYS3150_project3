@@ -111,7 +111,7 @@ void SolSys:: rungeKutta4(double h) {
     /* Forwards every Celestial Object in the Solar System one timestep with
      * the RungeKutta4 method.
      */
-    double h2 = h * 0.5; // too save a few calculations
+    double h2 = h * 0.5; // to save a few calculations
     double h6 = h / 6.0;
 
     mat v0 = getVelocities();
@@ -137,13 +137,15 @@ void SolSys:: rungeKutta4(double h) {
     setPositions (x0 + (v0 + 2*v1 + 2*v2 + v3) * h6);
 }
 
-void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
-    /* Solve system for a given no of steps and a timestep.
+void SolSys:: moveSystem(double time, int stepN, string location) {
+    /* Solve system for a given period of time and a number of steps.
+     * Write results to files in folder location unless location = "0".
      */
 
     double h = time / stepN;
 
-    if (output) {
+    if (location.compare("0") != 0) {
+        cout << "Solving and writing data..." << endl;
 
         outfile  = new ofstream(("data/" + location + "/info.dat").c_str());
         *outfile << time << "," << stepN << "," << 3 << endl;
@@ -163,26 +165,31 @@ void SolSys:: moveSystem(string location, double time, int stepN, bool output) {
                 bodies[i].writeData();
             }
         }
+        for (int i=0; i<N; i++) {
+            bodies[i].closeOutfile();
+        }
     }
     else {
+        cout << "Solving WITHOUT writing data..." << endl;
+
         for (int j=0; j<stepN; j++) {
             rungeKutta4(h);
         }
     }
-    for (int i=0; i<N; i++) {
-        bodies[i].closeOutfile();
-    }
 }
 
-void SolSys:: moveSystem(string location, double time, double h, bool output) {
+void SolSys:: moveSystem(double time, double h, string location) {
+    /* Give timestep as argument instead of number of steps. */
     int stepN = (int)(time / h + 0.5); // round to int
-    moveSystem(location, time, stepN, output);
+    moveSystem(time, stepN, location);
 }
 
-void SolSys:: moveSystem(string location, double time, int stepN) {
-    moveSystem(location, time, stepN, true); // default value is true
+void SolSys:: moveSystem(double time, int stepN) {
+    /* Solve without saving the data. */
+    moveSystem(time, stepN, "0");
 }
 
-void SolSys:: moveSystem(string location, double time, double h) {
-    moveSystem(location, time, h, true); // default value is true
+void SolSys:: moveSystem(double time, double h) {
+    /* Solve without saving the data. */
+    moveSystem(time, h, "0");
 }

@@ -48,10 +48,10 @@ public:
     void rungeKutta4();
     void rungeKutta4(double h);
 
-    void moveSystem(string, double, int,    bool);
-    void moveSystem(string, double, double, bool);
-    void moveSystem(string, double, int);
-    void moveSystem(string, double, double);
+    void moveSystem(double, int,    string);
+    void moveSystem(double, double, string);
+    void moveSystem(double, int);
+    void moveSystem(double, double);
 };
 
 #endif
