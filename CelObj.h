@@ -15,16 +15,16 @@ public:
     string name;
     double mass;
 
-    vec position;
-    vec velocity;
+    rowvec position;
+    rowvec velocity;
 
     ofstream* outfile;
 
     CelObj();
-    CelObj(string, double, vec, vec);
+    CelObj(string, double, rowvec, rowvec);
     ~CelObj();
 
-    vec getForce(CelObj);
+    rowvec getForce(CelObj);
 
     void makeOutfile(string);
     void closeOutfile();

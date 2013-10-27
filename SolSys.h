@@ -27,7 +27,7 @@ public:
     ~SolSys();
 
     void addCelObj(CelObj);
-    void addCelObj(string, double, vec, vec);
+    void addCelObj(string, double, rowvec, rowvec);
     void addCelObj(string, double, double, double, double,
                                    double, double, double);
     void addCelObj(string, double, double, double,
