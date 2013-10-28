@@ -114,6 +114,19 @@ void SolSys:: rungeKutta4(double h) {
     double h2 = h * 0.5; // to save a few calculations
     double h6 = h / 6.0;
 
+    /*
+    // Euler Chromer:
+    mat v0 = getVelocities();
+    mat x0 = getPositions();
+    mat a0 = findAccels();
+
+    mat v1 = v0 + a0 * h;
+    mat x1 = x0 + v1 * h;
+    setVelocities(v1);
+    setPositions (x1);
+    // end Euler Chromer
+    */
+
     mat v0 = getVelocities();
     mat x0 = getPositions();
     mat a0 = findAccels();
@@ -124,7 +137,7 @@ void SolSys:: rungeKutta4(double h) {
     mat a1 = findAccels();
 
     mat v2 = v0 + a1 * h2;
-    mat x2 = v0 + v1 * h2;
+    mat x2 = x0 + v1 * h2;
     setPositions(x2);
     mat a2 = findAccels();
 
