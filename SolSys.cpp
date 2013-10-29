@@ -77,6 +77,8 @@ mat SolSys:: getVelocities() {
 
 cube SolSys:: findForces() {
     /* Fills a matrix with the forces between every CelObj.
+     * Warning: The gravity constant is not included here because it is more
+     * resource effective to calculate in findAccels().
      */
     cube F = zeros<cube>(N,3,N);
 
@@ -90,11 +92,15 @@ cube SolSys:: findForces() {
             }
         }
     }
-    F *= 0.00011854924136738324; // multiply with earthM scaled gravity constant
     return F;
 }
 
 mat SolSys:: findAccels() {
+    /* Finds the accelerations for every CelObj in the SolSys.
+     * Warning: The gravity constant is implemented here instead of in
+     * findForces(), since it then only needs to be multiplied with a mat and
+     * not a cube. This saves approx 3 % of total calculation time.
+     */
     cube F = findForces();
     mat a = zeros<mat>(N,3);
 
@@ -104,6 +110,7 @@ mat SolSys:: findAccels() {
     for (int i=0; i<N; i++) {
         a.row(i) /= bodies[i].mass;
     }
+    a *= 0.00011854924136738324; // multiply with earthM scaled gravity constant
     return a;
 }
 
@@ -158,7 +165,8 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
     double h = time / stepN;
 
     if (location.compare("0") != 0) {
-        cout << "Solving and writing data..." << endl;
+        cout << "Did you make sure data/" << location << "/ exists?" << endl
+             << "Solving and writing data..." << endl;
 
         outfile  = new ofstream(("data/" + location + "/info.dat").c_str());
         *outfile << time << "," << stepN << "," << 3 << endl;
