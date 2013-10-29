@@ -26,7 +26,9 @@
 % + m_\textrm{Earth} \mathbf{v}_\textrm{Earth}
 % + \dots + m_= 0
 
-It is desirable that the center of mass of the solar system is in the origin of the coordinate system, i.e. the total momentum $\mathbf{p}$ of all the celestial bodies should be $0$, like in equation \ref{eq:momentum_sum}. Gravity is a conservative force, so if this is true at the initialization it should remain true always. If the initial velocites of all planets (and moons, asteroids, etc., if any) are given, one need simply to solve for the Sun's velocity $\mathbf{v}_\odot$ in equation \ref{eq:momentum_sun} and set the velocity to this number in the program to make sure that $\mathbf{p} = 0$.
+It is desirable that the total momentum $\mathbf{p}$ of all the celestial bodies should be $0$, like in equation \ref{eq:momentum_sum}. Then, the solar system will remain in place and the orbits will remain where they are. This makes it much easier to see what is acually going on when plotting and analyzing the result. In reality, the solar system \emph{do} have a total momentum, but in our model there is nothing moving relative to the solar system.
+
+Gravity is a conservative force, so if $\mathbf{p} = 0$ is true at the initialization it should remain true always. If the initial velocites of all planets (and moons, asteroids, etc., if any) are given, one need simply to solve for the Sun's velocity $\mathbf{v}_\odot$ in equation \ref{eq:momentum_sun} and set the velocity to this number in the program to make sure that $\mathbf{p} = 0$.
 \begin{align}
 	\label{eq:momentum_sum}
 	\mathbf{p} =
