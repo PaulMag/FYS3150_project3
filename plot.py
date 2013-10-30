@@ -28,13 +28,12 @@ for i in range(N):
 
 
 plt.figure()
+plt.title(folder + ", time = %g years, h = %g years" % (time, time/n))
 plt.axis("equal")
-
-plt.title(folder)
 plt.xlabel("x [AU]"); plt.ylabel("y [AU]")
-plt.legend( names, loc="best" )
 
 for i in range(N):
     plt.plot( positions[i,:,0], positions[i,:,1] )
+plt.legend( names, loc="best" )
 
 plt.show()
