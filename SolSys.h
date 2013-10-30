@@ -39,6 +39,10 @@ public:
     mat getPositions ();
     mat getVelocities();
 
+    void setCenterOfMass();
+    void setTotalMomentum(CelObj);
+    void setTotalMomentum();
+
     cube findForces();
     mat  findAccels();
 
