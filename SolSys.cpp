@@ -3,6 +3,8 @@
 #include <fstream>
 #include <armadillo>
 
+#include <ctime>
+
 using namespace std;
 using namespace arma;
 
@@ -73,6 +75,39 @@ mat SolSys:: getVelocities() {
         v.row(i) = bodies[i].velocity;
     }
     return v;
+}
+
+void SolSys:: setCenterOfMass() {
+    /* Find current center of mass and shift every CelObj accordingly so origo
+     * becomes CM.
+     */
+    rowvec CM(3);
+    for (int i=0; i<N; i++) {
+        CM += bodies[i].mass * bodies[i].position;
+    }
+    for (int i=0; i<N; i++) {
+        bodies[i].position -= CM;
+    }
+    cout << "Center of mass moved from " << CM << " to origo." << endl;
+}
+
+void SolSys:: setTotalMomentum(CelObj body) {
+    /* Set the velocity of given body (typically the Sun) so that total momentum
+     * of this SolSys becomes 0. Assumes that body is in bodies, else this
+     * method doesn't make sense.
+     */
+    rowvec momTot(3);
+    body.velocity *= 0;
+    for (int i=0; i<N; i++) {
+        momTot += bodies[i].mass * bodies[i].velocity;;
+    }
+    body.velocity = - momTot / body.mass;
+    cout << "Total momentum changed from " << momTot << " to zero." << endl;
+}
+
+void SolSys:: setTotalMomentum() {
+    /* Calls setTotalMomentum with the latest added CelObj. */
+    setTotalMomentum(bodies[N-1]);
 }
 
 cube SolSys:: findForces() {
@@ -163,6 +198,7 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
      */
 
     double h = time / stepN;
+    clock_t start, finish;
 
     if (location.compare("0") != 0) {
         cout << "Did you make sure data/" << location << "/ exists?" << endl
@@ -180,12 +216,16 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
             bodies[i].makeOutfile("data/" + location + "/obj" + SSTR(i) + ".dat");
         }
 
+        start = clock();
         for (int j=0; j<stepN; j++) {
+            /* Integration loop! With filewriting. */
             rungeKutta4(h);
             for (int i=0; i<N; i++) {
                 bodies[i].writeData();
             }
         }
+        finish = clock();
+
         for (int i=0; i<N; i++) {
             bodies[i].closeOutfile();
         }
@@ -193,10 +233,16 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
     else {
         cout << "Solving WITHOUT writing data..." << endl;
 
+        start = clock();
         for (int j=0; j<stepN; j++) {
+            /* Integration loop! Without filewriting. */
             rungeKutta4(h);
         }
+        finish = clock();
     }
+
+    double compTime = double(finish - start) / CLOCKS_PER_SEC;
+    cout << "Solver computation time: " << compTime  << " seconds." << endl;
 }
 
 void SolSys:: moveSystem(double time, double h, string location) {
