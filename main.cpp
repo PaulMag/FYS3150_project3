@@ -19,8 +19,8 @@ using namespace arma;
 
 int main() {
 
-    clock_t startFull, startSolve, finish;
-    startFull = clock();
+    clock_t start, finish;
+    start = clock();
 
     SolSys mysun = SolSys();
 
@@ -46,19 +46,17 @@ int main() {
         mysun.bodies[i].velocity *= 0.210945021; // km/s to au/year
     }
 
-    mysun.addCelObj("Sun", 333054.253182, 0., 0., 0., 0.);
+    mysun.addCelObj("Sun", 333054.253182, 0, 0, 0, 0);
+    mysun.setCenterOfMass();
+    mysun.setTotalMomentum();
 
     double time = 100.0; // years
-    double h    = 1e-3;
+    double h    = 1e-2;
     string location = "Full_Solar_System";
 
-    startSolve = clock();
     mysun.moveSystem(time, h, location);
     finish = clock();
 
-    double fullTime  = double(finish - startFull)  / CLOCKS_PER_SEC;
-    double solveTime = double(finish - startSolve) / CLOCKS_PER_SEC;
-
-    cout << "Total computation time: " << fullTime  << " seconds." << endl
-         << "Time used solving:      " << solveTime << " seconds." << endl;
+    double compTime = double(finish - start) / CLOCKS_PER_SEC;
+    cout << "Total computation time:  " << compTime  << " seconds." << endl;
 }
