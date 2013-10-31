@@ -12,7 +12,16 @@ using namespace arma;
 #include "CelObj.h"
 
 SolSys:: SolSys() {
-    N = 0; // number of celestial bodies
+    N = 0;   // number of celestial bodies
+    dim = 2; // default dimensionality
+}
+
+SolSys:: SolSys(int d) {
+    N = 0;   // number of celestial bodies
+    dim = d; // should be 2 or 3
+    if (dim > 2 or 3 < dim) {
+        cout << "Warning: Dimensionality should be either 2 or 3." << endl;
+    }
 }
 
 SolSys:: ~SolSys() {
@@ -46,7 +55,18 @@ void SolSys:: addCelObj(string n, double m, double x0, double x1, double x2,
 
 void SolSys:: addCelObj(string n, double m, double x0, double x1,
                                             double v0, double v1) {
-    addCelObj(n, m, x0, x1, 0.0, v0, v1, 0.0);
+    /* This method can be used even if dim=3. */
+    if (dim == 3) {
+        addCelObj(n, m, x0, x1, 0, v0, v1, 0);
+    }
+    else {
+        rowvec x;
+        x << x0 << x1;
+        rowvec v;
+        v << v0 << v1;
+        CelObj newBody(n, m, x, v);
+        addCelObj(newBody);
+    }
 }
 
 void SolSys:: setPositions(mat x) {
@@ -62,7 +82,7 @@ void SolSys:: setVelocities(mat v) {
 }
 
 mat SolSys:: getPositions() {
-    mat x(N,3);
+    mat x(N,dim);
     for (int i=0; i<N; i++) {
         x.row(i) = bodies[i].position;
     }
@@ -70,7 +90,7 @@ mat SolSys:: getPositions() {
 }
 
 mat SolSys:: getVelocities() {
-    mat v(N,3);
+    mat v(N,dim);
     for (int i=0; i<N; i++) {
         v.row(i) = bodies[i].velocity;
     }
@@ -81,7 +101,7 @@ void SolSys:: setCenterOfMass() {
     /* Find current center of mass and shift every CelObj accordingly so origo
      * becomes CM.
      */
-    rowvec CM(3);
+    rowvec CM(dim);
     for (int i=0; i<N; i++) {
         CM += bodies[i].mass * bodies[i].position;
     }
@@ -96,7 +116,7 @@ void SolSys:: setTotalMomentum(CelObj body) {
      * of this SolSys becomes 0. Assumes that body is in bodies, else this
      * method doesn't make sense.
      */
-    rowvec momTot(3);
+    rowvec momTot(dim);
     body.velocity *= 0;
     for (int i=0; i<N; i++) {
         momTot += bodies[i].mass * bodies[i].velocity;;
@@ -115,13 +135,13 @@ cube SolSys:: findForces() {
      * Warning: The gravity constant is not included here because it is more
      * resource effective to calculate in findAccels().
      */
-    cube F = zeros<cube>(N,3,N);
+    cube F = zeros<cube>(N,dim,N);
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<i; j++) {
 
             rowvec f = bodies[i].getForce(bodies[j]);
-            for (int k=0; k<3; k++) {
+            for (int k=0; k<dim; k++) {
                 F(i,k,j) =   f(k);
                 F(j,k,i) = - f(k); // same force on both in CelObj pair
             }
@@ -137,7 +157,7 @@ mat SolSys:: findAccels() {
      * not a cube. This saves approx 3 % of total calculation time.
      */
     cube F = findForces();
-    mat a = zeros<mat>(N,3);
+    mat a = zeros<mat>(N,dim);
 
     for (int j=0; j<N; j++) {
         a += F.slice(j); // sum all forces on each CelObj
@@ -205,7 +225,7 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
              << "Solving and writing data..." << endl;
 
         outfile  = new ofstream(("data/" + location + "/info.dat").c_str());
-        *outfile << time << "," << stepN << "," << 3 << endl;
+        *outfile << time << "," << stepN << "," << dim << endl;
         for (int i=0; i<N; i++) {
             *outfile << bodies[i].name << ",";
         }
