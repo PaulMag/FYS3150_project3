@@ -16,3 +16,8 @@
 
 # Makefiles
 make*
+
+# Latex files
+*.aux
+*.log
+*.pdf

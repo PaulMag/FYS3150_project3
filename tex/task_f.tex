@@ -1,0 +1,37 @@
+It is desirable that the total momentum $\mathbf{p}$ of all the celestial bodies should be $0$, like in equation \refeq{momentum_sum}. Then, the solar system will remain in place and the orbits will remain where they are. This makes it much easier to see what is acually going on when plotting and analyzing the result. In reality, the solar system \emph{do} have a total momentum, but in our model there is nothing moving relative to the solar system.
+
+Gravity is a conservative force, so if $\mathbf{p} = 0$ is true at the initialization it should remain true always. If the initial velocites of all planets (and moons, asteroids, etc., if any) are given, one need simply to solve for the Sun's velocity $\mathbf{v}_\odot$ in equation \refeq{momentum_sun}, so that we get \refeq{momentum_sum2}, and set the velocity to this number in the program to make sure that $\mathbf{p} = 0$.
+\begin{align}
+	\label{eq:momentum_sum}
+	\mathbf{p} =
+	\mathbf{p}_\odot
+	+ \mathbf{p}_\textrm{Mercury}
+	+ \mathbf{p}_\textrm{Venus}
+	+ \mathbf{p}_\textrm{Earth}
+	+ \dots
+	+ \mathbf{p}_\textrm{Pluto}
+	&= 0 \\
+	\label{eq:momentum_sun}
+	m_\odot \mathbf{v}_\odot
+	+ m_1 \mathbf{v}_1
+	+ m_2 \mathbf{v}_2
+	+ m_3 \mathbf{v}_3
+	+ \dots
+	+ m_N \mathbf{v}_N
+	&= 0
+\end{align}
+\begin{equation}
+    \label{eq:momentum_sum2}
+    \mathbf{v}_\odot = - \frac{1}{m_\odot} \sum_i^N m_i \mathbf{v}_i
+\end{equation}
+
+
+To have origo be the center off mass for the solar system, we may first add the Sun and all planets with whichever positions we want, then calculate which position is the CM and subtract this position from every object, i.e. shifting the entire system so that the CM is placed in origo.
+\begin{algorithmic}
+    \State $ \mathbf{r}_{\textrm{CM}} = \sum_i^N m_i \mathbf{r}_i $
+    \For{i = 1:N}
+        \State $ \mathbf{r}_i = \mathbf{r}_i - \mathbf{r}_{\textrm{CM}} $
+    \EndFor
+\end{algorithmic}
+
+The data on the planets' initial positions and velocities comes from NASA: \url{http://nssdc.gsfc.nasa.gov/planetary/factsheet/planet_table_ratio.html}. On this website there is no information on where each planet is at a given time, so we have just assumed that when $t=0$ every planet is on it's perihelion (and thus have it's greatest orbital velocity) and have given the perihelions arbitrary angular position. This leads to each planet's orbit being correct relative to the Sun, but not correct relative to the other planets (this is only a problem if our goal is to find the \emph{actual} state of the solar system at various times). The general picture, however, is correct. E.g. we can see details such as Jupiter tugging on nearby planets and Neptune's and Pluto's orbits crossing eachother.
