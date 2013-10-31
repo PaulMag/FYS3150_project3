@@ -8,10 +8,14 @@ formulated in 1687 can be used for calculating the forces acting on
 the objects. From there, Newton's second law states that the sum of
 the forces acting on an object is proportional to the acceleration
 via \[ \Sigma \mathbf{F} = M \mathbf{a}. \] This leads to the
-differential equation \[ \frac{\D^2 \mathbf{x}}{\D t^2} =
-\mathbf{a} = \frac{\Sigma \mathbf{F}}{M_{\text{obj}}}, \] where
-$M_{\text{obj}}$ is the mass of that particular object. The aim is
-to solve this equation using numerical methods.
+differential equation
+\begin{equation}
+    \label{eq:newtonDifferential}
+    \frac{\D^2 \mathbf{x}}{\D t^2} = \mathbf{a} = \frac{\Sigma
+        \mathbf{F}}{M_{\text{obj}}},
+\end{equation}
+where $M_{\text{obj}}$ is the mass of that particular object. The
+aim is to solve this equation using numerical methods.
 
 % Begin talk about units
 When working with problems on the astronomical scale values tend to
@@ -44,7 +48,7 @@ The masses must be scaled according to the relation
 \end{equation}
 Calculating the gravitational forces for an object can then be done
 by \[ F_G = \frac{M_1 M_2}{r^2}, \] provided the masses are scaled
-according to the relation shown in \refeq{scaleMass}.
+according to the relation shown in equation \refeq{scaleMass}.
 
 Directions must also be kept during calculation. By multiplying
 with the unit vector \[ \frac{\mathbf{r}}{|\mathbf{r}|}, \] this is
