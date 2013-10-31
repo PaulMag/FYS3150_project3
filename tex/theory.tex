@@ -1,4 +1,42 @@
-One can with good consience consider gravitation to be the main
+One can with good conscience consider gravitation to be the main
 governing force in the solar system. Combining this with Newton's
 second law of motion gives one a set of equations that can be used
 in order to simulate how the solar system behaves in time.
+
+Newton's law of gravity \[ F_G = G\frac{M_1 M_2}{r^2}, \]
+formulated in 1687 can be used for calculating the forces acting on
+the objects. From there, Newton's second law states that the sum of
+the forces acting on an object is proportional to the acceleration
+via \[ \Sigma \mathbf{F} = m \mathbf{a}. \] This leads to the
+differential equation \[ \frac{\D^2 \mathbf{x}}{\D t^2} =
+\mathbf{a} = \frac{\Sigma \mathbf{F}}{M_{\text{obj}}}, \] where
+$M_{\text{obj}}$ is the mass of that particular object. The aim is
+to solve this equation using numerical methods.
+
+When working with problems on the astronomical scale values tend to
+be high, both in masses, velocities and distances. In order to
+avoid numerical errors in representation of numbers a better choice
+of units than the standard SI units is preferable.
+
+The astronomical unit, labeled AU, where 1 AU is the mean distance
+from the earth to the sun, can be used for this particular purpose.
+Naturally, velocities can be expressed with the AU / year unit.
+Converting from m / s can be done via the formula \[1 \text{ m/s} =
+\frac{1}{(1 \text{ AU})_{\text{m}} \cdot (1 \text{ year})_{\text{s}}}. \]
+
+Furthermore, a choice of mass units that lets one ommit the
+multiplication with the gravitational constant $G$ would be
+preferable. As a result of the near circular orbit of Earth around
+the sun, the force between these two objects must obey the relation
+\[ F_G = \frac{M_{\text{Earth}}v^2}{r} = \frac{G M_{\odot}
+M_{\text{Earth}}}{r^2}. \] Which means that \[G M_{\odot} = 4\pi^2
+\text{ AU}^3 / \text{year}^2. \]
+
+In other words, calculating all the masses relative to the sun's
+mass means that the gravitational forces easier can be calculated.
+The masses must be scaled according to the relation \[ G
+    M_{\text{obj}} \text{ AU}^3 / \text{year}^2 = 4\pi^2
+    \frac{(M_{\text{obj}})_{\text{kg}}}{(M_{\odot})_{\text{kg}}} \text{ AU}^3
+/ \text{year}^2. \]
+
+% Boundary conditions
