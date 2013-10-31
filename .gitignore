@@ -21,3 +21,6 @@ make*
 *.aux
 *.log
 *.pdf
+
+# Stupid swap files
+*.swp
