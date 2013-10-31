@@ -21,6 +21,7 @@ public:
     ofstream* outfile;
 
     CelObj();
+    CelObj(int);
     CelObj(string, double, rowvec, rowvec);
     ~CelObj();
 

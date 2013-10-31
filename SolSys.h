@@ -19,11 +19,13 @@ class SolSys {
 
 public:
     int N; // no of bodies
+    int dim; // dimensionality
     vector<CelObj> bodies;
 
     ofstream* outfile;
 
     SolSys();
+    SolSys(int);
     ~SolSys();
 
     void addCelObj(CelObj);
