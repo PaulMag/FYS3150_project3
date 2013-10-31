@@ -3,6 +3,8 @@
 #include <fstream>
 #include <armadillo>
 
+#include <ctime>
+
 using namespace std;
 using namespace arma;
 
@@ -10,7 +12,16 @@ using namespace arma;
 #include "CelObj.h"
 
 SolSys:: SolSys() {
-    N = 0; // number of celestial bodies
+    N = 0;   // number of celestial bodies
+    dim = 2; // default dimensionality
+}
+
+SolSys:: SolSys(int d) {
+    N = 0;   // number of celestial bodies
+    dim = d; // should be 2 or 3
+    if (dim > 2 or 3 < dim) {
+        cout << "Warning: Dimensionality should be either 2 or 3." << endl;
+    }
 }
 
 SolSys:: ~SolSys() {
@@ -44,7 +55,18 @@ void SolSys:: addCelObj(string n, double m, double x0, double x1, double x2,
 
 void SolSys:: addCelObj(string n, double m, double x0, double x1,
                                             double v0, double v1) {
-    addCelObj(n, m, x0, x1, 0.0, v0, v1, 0.0);
+    /* This method can be used even if dim=3. */
+    if (dim == 3) {
+        addCelObj(n, m, x0, x1, 0, v0, v1, 0);
+    }
+    else {
+        rowvec x;
+        x << x0 << x1;
+        rowvec v;
+        v << v0 << v1;
+        CelObj newBody(n, m, x, v);
+        addCelObj(newBody);
+    }
 }
 
 void SolSys:: setPositions(mat x) {
@@ -60,7 +82,7 @@ void SolSys:: setVelocities(mat v) {
 }
 
 mat SolSys:: getPositions() {
-    mat x(N,3);
+    mat x(N,dim);
     for (int i=0; i<N; i++) {
         x.row(i) = bodies[i].position;
     }
@@ -68,35 +90,74 @@ mat SolSys:: getPositions() {
 }
 
 mat SolSys:: getVelocities() {
-    mat v(N,3);
+    mat v(N,dim);
     for (int i=0; i<N; i++) {
         v.row(i) = bodies[i].velocity;
     }
     return v;
 }
 
+void SolSys:: setCenterOfMass() {
+    /* Find current center of mass and shift every CelObj accordingly so origo
+     * becomes CM.
+     */
+    rowvec CM(dim);
+    for (int i=0; i<N; i++) {
+        CM += bodies[i].mass * bodies[i].position;
+    }
+    for (int i=0; i<N; i++) {
+        bodies[i].position -= CM;
+    }
+    cout << "Center of mass moved from " << CM << " to origo." << endl;
+}
+
+void SolSys:: setTotalMomentum(CelObj body) {
+    /* Set the velocity of given body (typically the Sun) so that total momentum
+     * of this SolSys becomes 0. Assumes that body is in bodies, else this
+     * method doesn't make sense.
+     */
+    rowvec momTot(dim);
+    body.velocity *= 0;
+    for (int i=0; i<N; i++) {
+        momTot += bodies[i].mass * bodies[i].velocity;;
+    }
+    body.velocity = - momTot / body.mass;
+    cout << "Total momentum changed from " << momTot << " to zero." << endl;
+}
+
+void SolSys:: setTotalMomentum() {
+    /* Calls setTotalMomentum with the latest added CelObj. */
+    setTotalMomentum(bodies[N-1]);
+}
+
 cube SolSys:: findForces() {
     /* Fills a matrix with the forces between every CelObj.
+     * Warning: The gravity constant is not included here because it is more
+     * resource effective to calculate in findAccels().
      */
-    cube F = zeros<cube>(N,3,N);
+    cube F = zeros<cube>(N,dim,N);
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<i; j++) {
 
             rowvec f = bodies[i].getForce(bodies[j]);
-            for (int k=0; k<3; k++) {
+            for (int k=0; k<dim; k++) {
                 F(i,k,j) =   f(k);
                 F(j,k,i) = - f(k); // same force on both in CelObj pair
             }
         }
     }
-    F *= 0.00011854924136738324; // multiply with earthM scaled gravity constant
     return F;
 }
 
 mat SolSys:: findAccels() {
+    /* Finds the accelerations for every CelObj in the SolSys.
+     * Warning: The gravity constant is implemented here instead of in
+     * findForces(), since it then only needs to be multiplied with a mat and
+     * not a cube. This saves approx 3 % of total calculation time.
+     */
     cube F = findForces();
-    mat a = zeros<mat>(N,3);
+    mat a = zeros<mat>(N,dim);
 
     for (int j=0; j<N; j++) {
         a += F.slice(j); // sum all forces on each CelObj
@@ -104,6 +165,7 @@ mat SolSys:: findAccels() {
     for (int i=0; i<N; i++) {
         a.row(i) /= bodies[i].mass;
     }
+    a *= 0.00011854924136738324; // multiply with earthM scaled gravity constant
     return a;
 }
 
@@ -156,12 +218,14 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
      */
 
     double h = time / stepN;
+    clock_t start, finish;
 
     if (location.compare("0") != 0) {
-        cout << "Solving and writing data..." << endl;
+        cout << "Did you make sure data/" << location << "/ exists?" << endl
+             << "Solving and writing data..." << endl;
 
         outfile  = new ofstream(("data/" + location + "/info.dat").c_str());
-        *outfile << time << "," << stepN << "," << 3 << endl;
+        *outfile << time << "," << stepN << "," << dim << endl;
         for (int i=0; i<N; i++) {
             *outfile << bodies[i].name << ",";
         }
@@ -172,12 +236,16 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
             bodies[i].makeOutfile("data/" + location + "/obj" + SSTR(i) + ".dat");
         }
 
+        start = clock();
         for (int j=0; j<stepN; j++) {
+            /* Integration loop! With filewriting. */
             rungeKutta4(h);
             for (int i=0; i<N; i++) {
                 bodies[i].writeData();
             }
         }
+        finish = clock();
+
         for (int i=0; i<N; i++) {
             bodies[i].closeOutfile();
         }
@@ -185,10 +253,16 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
     else {
         cout << "Solving WITHOUT writing data..." << endl;
 
+        start = clock();
         for (int j=0; j<stepN; j++) {
+            /* Integration loop! Without filewriting. */
             rungeKutta4(h);
         }
+        finish = clock();
     }
+
+    double compTime = double(finish - start) / CLOCKS_PER_SEC;
+    cout << "Solver computation time: " << compTime  << " seconds." << endl;
 }
 
 void SolSys:: moveSystem(double time, double h, string location) {

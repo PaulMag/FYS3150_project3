@@ -11,8 +11,14 @@ using namespace arma;
 #include "CelObj.h"
 
 CelObj:: CelObj() {
-    position = rowvec(3);
-    velocity = rowvec(3);
+    /* Default dimensionality is 2. */
+    position = zeros<rowvec>(2);
+    velocity = zeros<rowvec>(2);
+}
+
+CelObj:: CelObj(int dim) {
+    position = zeros<rowvec>(dim);
+    velocity = zeros<rowvec>(dim);
 }
 
 CelObj:: CelObj(string n, double m, rowvec x, rowvec v) {
@@ -48,5 +54,7 @@ void CelObj:: closeOutfile() {
 }
 
 void CelObj:: writeData() {
-    *outfile << position(0) << "," << position(1) << "," << position(2) << endl;
+    /* Currently only 2D writing is available. */
+    //*outfile << position(0) << "," << position(1) << "," << position(2) << endl;
+    *outfile << position(0) << "," << position(1) <<  endl;
 }
