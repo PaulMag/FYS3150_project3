@@ -1,0 +1,23 @@
+The aim of the simulation is to solve equation
+\refeq{newtonDifferential}. This will be done by employing the
+Runge-Kutta 4th order numerical integration scheme.
+
+% Choice of numerical method
+When solving this kind of differential problems, the choice of
+integration scheme is of severe importance. Choosing a less
+accurate method might provide incorrect solutions and if the
+problem has exceedingly rapid changes a more stable (implicit)
+integration scheme must be considered.
+
+Considering the huge time scale, even with the scaled units. This
+problem will not provide solutions with such rapid changes.
+Therefore it is sufficient to choose the RK4 scheme. The local
+trucation error is on the order of $O(\D t^5)$ and the global error
+is on the order of $O(\D t^4)$. Again, considering that the time is
+of unit years, this error is small ``enough'' as to avoid
+monumental errors in the solutions.
+
+This means that for example choosing $\D t = 1 \cdot 10^{-2}$ years
+will produce a global error proportional to $\D t^4 = 1 \cdot
+10^{-8}$ years which is approximately 0.32 seconds.
+% End choice of numerical method
