@@ -16,3 +16,11 @@
 
 # Makefiles
 make*
+
+# Latex files
+*.aux
+*.log
+*.pdf
+
+# Stupid swap files
+*.swp

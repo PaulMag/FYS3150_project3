@@ -1,0 +1,53 @@
+% \begin{algorithmic}
+%     \For{i=1,2,3,\dots,n}
+%         \State$b_{ii} = a_{ii}$
+%
+%         \State $b_{ik} = a_{ik}\cos{(\theta)} - a_{il}\sin{(\theta)}$
+%
+%         \State $b_{il} = a_{il}\cos{(\theta)} + a_{ik}\sin{(\theta)}$
+%
+%         \State $b_{kk} = a_{kk}\cos^2{(\theta)} -
+%         2a_{kl}\cos{(\theta)}\sin{(\theta)} +
+%         a_{ll}\sin^2{(\theta)}$
+%
+%         \State $b_{ll} = a_{ll}\cos^2{(\theta)} -
+%         2a_{kl}\cos{(\theta)}\sin{(\theta)} +
+%         a_{kk}\sin^2{(\theta)}$
+%
+%         \State $b_{kl} =
+%         (a_{kk}-a_{ll})\cos{(\theta)}\sin{(\theta)} +
+%         a_{kl}(\cos^2{(\theta)} - \sin^2{(\theta)})$
+%     \EndFor
+% \end{algorithmic}
+
+% m_\odot \mathbf{v}_\odot
+% + m_\textrm{Mercury} \mathbf{v}_\textrm{Mercury}
+% + m_\textrm{Venus} \mathbf{v}_\textrm{Venus}
+% + m_\textrm{Earth} \mathbf{v}_\textrm{Earth}
+% + \dots + m_= 0
+
+It is desirable that the total momentum $\mathbf{p}$ of all the celestial bodies should be $0$, like in equation \ref{eq:momentum_sum}. Then, the solar system will remain in place and the orbits will remain where they are. This makes it much easier to see what is acually going on when plotting and analyzing the result. In reality, the solar system \emph{do} have a total momentum, but in our model there is nothing moving relative to the solar system.
+
+Gravity is a conservative force, so if $\mathbf{p} = 0$ is true at the initialization it should remain true always. If the initial velocites of all planets (and moons, asteroids, etc., if any) are given, one need simply to solve for the Sun's velocity $\mathbf{v}_\odot$ in equation \ref{eq:momentum_sun} and set the velocity to this number in the program to make sure that $\mathbf{p} = 0$.
+\begin{align}
+	\label{eq:momentum_sum}
+	\mathbf{p} =
+	\mathbf{p}_\odot
+	+ \mathbf{p}_\textrm{Mercury}
+	+ \mathbf{p}_\textrm{Venus}
+	+ \mathbf{p}_\textrm{Earth}
+	+ \dots
+	+ \mathbf{p}_\textrm{Pluto}
+	&= 0 \\
+	\label{eq:momentum_sun}
+	m_\odot \mathbf{v}_\odot
+	+ m_1 \mathbf{v}_1
+	+ m_2 \mathbf{v}_2
+	+ m_3 \mathbf{v}_3
+	+ \dots
+	+ m_N \mathbf{v}_N
+	&= 0
+\end{align}
+$$
+	\mathbf{v}_\odot = - \frac{1}{m_\odot} \sum_i^N m_i \mathbf{v}_i
+$$

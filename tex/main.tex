@@ -1,0 +1,91 @@
+\documentclass[a4paper, 12pt, english]{article}
+
+% Import packages:
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel} % change to english if english
+\usepackage{graphicx, color}
+\usepackage{parskip} % norwegian sections (skip line)
+\usepackage{amsmath}
+\usepackage{varioref} % fancy captions
+\usepackage[margin=3cm]{geometry} % smaller margins
+\usepackage{grffile} % Extended file name support for graphics, allows periods in filenames
+\usepackage[small,bf]{caption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{algpseudocode}
+\usepackage{parskip}
+\usepackage{caption}
+
+\definecolor{darkgreen}{RGB}{0,135,0}
+
+% Set code stuff:
+\usepackage{listings}
+\lstset{language=c++} % or python, java, etc...
+\lstset{basicstyle=\ttfamily\scriptsize} % \small if short code
+\lstset{frame=single} % creates the frame around code
+\lstset{title=\lstname} % display name of file, not necessary
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\color{blue}}
+\lstset{stringstyle =\color{darkgreen}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines=true}
+\lstset{tabsize=4}
+
+% Custom commands:
+%\newcommand{\nameOfCommand}[numberOfArguments]{command}
+\newcommand{\D}[1]{\ \mathrm{d}#1} % steps in integrals, ex: 4x \D{x} -> 4x dx
+\newcommand{\E}[1]{\cdot 10^{#1}}  % exponents, ex: 1.4\E{3} -> 1.4*10^3
+\newcommand{\U}[1]{\, \textrm{#1}} % display units prettily, ex: 15.4\U{m} -> 15.4 m
+\newcommand{\degree}{\, ^\circ}    % make a degree symbol
+
+\newcommand{\bilde}[3]{
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=\textwidth]{#1}
+		\caption{#3 \label{#2}}
+	\end{figure}
+}
+\newcommand{\bildeto}[4]{
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.96\textwidth]{#1}
+		\includegraphics[width=0.96\textwidth]{#2}
+		\caption{#4 \label{#3}}
+	\end{figure}
+}
+
+% Commands for referencing
+\newcommand{\refeq}[1]{(\textcolor{red}{\ref{eq:#1}})} % Red color when referencing equations.
+\newcommand{\refig}[1]{\textcolor{blue}{\ref{fig:#1}}} % Blue color when referencing figures.
+\newcommand{\reflst}[1]{(\textcolor{red}{\ref{lst:#1}})}
+\newcommand{\reftab}[1]{\textcolor{blue}{\ref{tab:#1}}} % Blue color when referencing tables.
+
+% Fancy ruler needed for titlepage
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+% Opening:
+\author{Kristoffer Brækken, Vedad Hodzic, Paul Magnus Sørensen-Clark}
+
+% Begin document:
+\begin{document}
+
+\begin{titlepage}
+    \thispagestyle{empty}
+    \input{frontPage.tex}
+\end{titlepage}
+
+\section{Introduction}
+
+\section{Theory}
+
+\input{theory.tex}
+
+\section{Algorithm}
+\input{exC}
+\section{}
+\input{task_f.tex}
+
+
+\end{document}
