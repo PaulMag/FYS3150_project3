@@ -1,0 +1,71 @@
+One can with good conscience consider gravitation to be the main
+governing force in the solar system. Combining this with Newton's
+second law of motion gives one a set of equations that can be used
+in order to simulate how the solar system behaves in time.
+
+Newton's law of gravity \[ F_G = G\frac{M_1 M_2}{r^2}, \]
+formulated in 1687 can be used for calculating the forces acting on
+the objects. From there, Newton's second law states that the sum of
+the forces acting on an object is proportional to the acceleration
+via \[ \Sigma \mathbf{F} = M \mathbf{a}. \] This leads to the
+differential equation \[ \frac{\D^2 \mathbf{x}}{\D t^2} =
+\mathbf{a} = \frac{\Sigma \mathbf{F}}{M_{\text{obj}}}, \] where
+$M_{\text{obj}}$ is the mass of that particular object. The aim is
+to solve this equation using numerical methods.
+
+% Begin talk about units
+When working with problems on the astronomical scale values tend to
+be high, both in masses, velocities and distances. In order to
+avoid numerical errors in representation of numbers a better choice
+of units than the standard SI units is preferable.
+
+The astronomical unit, labeled AU, where 1 AU is the mean distance
+from the earth to the sun, can be used for this particular purpose.
+Naturally, velocities can be expressed with the AU / year unit.
+Converting from m / s can be done via the formula \[1 \text{ m/s} =
+\frac{1}{(1 \text{ AU})_{\text{m}} \cdot (1 \text{ year})_{\text{s}}}. \]
+
+Furthermore, a choice of mass units that lets one ommit the
+multiplication with the gravitational constant $G$ would be
+preferable. As a result of the near circular orbit of Earth around
+the sun, the force between these two objects must obey the relation
+\[ F_G = \frac{M_{\text{Earth}}v^2}{r} = \frac{G M_{\odot}
+M_{\text{Earth}}}{r^2}. \] Which means that \[G M_{\odot} = 4\pi^2
+\text{ AU}^3 / \text{year}^2. \]
+
+In other words, calculating all the masses relative to the sun's
+mass means that the gravitational forces easier can be calculated.
+The masses must be scaled according to the relation
+\begin{equation} 
+    \label{eq:scaleMass}
+    M = G M_{\text{obj}} \text{ AU}^3 / \text{year}^2 = 4\pi^2
+    \frac{(M_{\text{obj}})_{\text{kg}}}{(M_{\odot})_{\text{kg}}}
+    \text{ AU}^3 / \text{year}^2.
+\end{equation}
+Calculating the gravitational forces for an object can then be done
+by \[ F_G = \frac{M_1 M_2}{r^2}, \] provided the masses are scaled
+according to the relation shown in \refeq{scaleMass}.
+
+Directions must also be kept during calculation. By multiplying
+with the unit vector \[ \frac{\mathbf{r}}{|\mathbf{r}|}, \] this is
+achieved. Concluding with the following expression for the
+gravitational force on an object \[ F_G = \mathbf{r}
+\frac{M_1 M_2}{|\mathbf{r}|^3}. \]
+% End talk of units
+
+% Begin talk of boundary conditions
+In order to run the simulation initial conditions for starting
+point and initial velocity is needed. Data for these cases can for
+example be found via NASA's databases. Usually, a mean orbital
+velocity is provided. Starting the celestial objects along the
+$x$-axis means that all the radial velocity will be directed in the
+$y$-direction. In this way, advanced calculations for finding how
+the velocities are distributed in the two directions at a certain
+time in the orbit becomes superflous.
+
+This will mean that the orbit will lose accuracy in time --- in
+other words the positions of the celestial objects relative to each
+other at a certain point in time will not be correct. Considering
+that the aim here is to illustrate the full motion of the objects
+this isn't a problem.
+% End talk of boundary conditions
