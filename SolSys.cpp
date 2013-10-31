@@ -97,37 +97,47 @@ mat SolSys:: getVelocities() {
     return v;
 }
 
+rowvec SolSys:: getCenterOfMass() {
+    rowvec CM        = zeros<rowvec>(dim);
+    double totalMass = 0;
+    for (int i=0; i<N; i++) {
+        CM        += bodies[i].mass * bodies[i].position;
+        totalMass += bodies[i].mass;
+    }
+    return CM / totalMass;
+}
+
 void SolSys:: setCenterOfMass() {
     /* Find current center of mass and shift every CelObj accordingly so origo
      * becomes CM.
      */
-    rowvec CM(dim);
-    for (int i=0; i<N; i++) {
-        CM += bodies[i].mass * bodies[i].position;
-    }
+    rowvec CM = getCenterOfMass();
     for (int i=0; i<N; i++) {
         bodies[i].position -= CM;
     }
-    cout << "Center of mass moved from " << CM << " to origo." << endl;
 }
 
-void SolSys:: setTotalMomentum(CelObj body) {
+rowvec SolSys:: getTotalMomentum() {
+    rowvec momTot = zeros<rowvec>(dim);
+    for (int i=0; i<N; i++) {
+        momTot += bodies[i].mass * bodies[i].velocity;;
+    }
+    return momTot;
+}
+
+void SolSys:: setTotalMomentum(CelObj* body) {
     /* Set the velocity of given body (typically the Sun) so that total momentum
      * of this SolSys becomes 0. Assumes that body is in bodies, else this
      * method doesn't make sense.
      */
-    rowvec momTot(dim);
-    body.velocity *= 0;
-    for (int i=0; i<N; i++) {
-        momTot += bodies[i].mass * bodies[i].velocity;;
-    }
-    body.velocity = - momTot / body.mass;
-    cout << "Total momentum changed from " << momTot << " to zero." << endl;
+    body->velocity *= 0;
+    rowvec momTot = getTotalMomentum();
+    body->velocity -= momTot / body->mass;
 }
 
 void SolSys:: setTotalMomentum() {
     /* Calls setTotalMomentum with the latest added CelObj. */
-    setTotalMomentum(bodies[N-1]);
+    setTotalMomentum(&bodies[N-1]);
 }
 
 cube SolSys:: findForces() {
@@ -221,8 +231,8 @@ void SolSys:: moveSystem(double time, int stepN, string location) {
     clock_t start, finish;
 
     if (location.compare("0") != 0) {
-        cout << "Did you make sure data/" << location << "/ exists?" << endl
-             << "Solving and writing data..." << endl;
+        //cout << "Did you make sure data/" << location << "/ exists?" << endl;
+        cout << "Solving and writing data..." << endl;
 
         outfile  = new ofstream(("data/" + location + "/info.dat").c_str());
         *outfile << time << "," << stepN << "," << dim << endl;
