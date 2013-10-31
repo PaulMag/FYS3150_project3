@@ -31,6 +31,7 @@ plt.figure()
 plt.title(folder + ", time = %g years, h = %g years" % (time, time/n))
 plt.axis("equal")
 plt.xlabel("x [AU]"); plt.ylabel("y [AU]")
+plt.grid('on')
 
 for i in range(N):
     plt.plot( positions[i,:,0], positions[i,:,1] )
