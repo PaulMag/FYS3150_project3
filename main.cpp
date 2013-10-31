@@ -17,12 +17,12 @@ using namespace arma;
  * vec a(n);
  */
 
-int main() {
+int main(int argc, char* argv[]) {
 
     clock_t start, finish;
     start = clock();
 
-    SolSys mysun = SolSys();
+    SolSys mysun = SolSys(2);
 
     /* Data collected from:
      * http://nssdc.gsfc.nasa.gov/planetary/factsheet/planet_table_ratio.html
@@ -41,18 +41,27 @@ int main() {
     mysun.addCelObj("Pluto"  ,   0.0022,  30.15 , 0, 0,   6.10);
 
     for (int i=0; i<mysun.N; i++) {
-        /* Set correct scaling: */
-        mysun.bodies[i].position *= 0.98323592;  // earth perihelions to au
-        mysun.bodies[i].velocity *= 0.210945021; // km/s to au/year
+        /* Set correct scaling. */
+        mysun.bodies[i].position *= 0.98323592;  // [earth perihelions] to [au]
+        mysun.bodies[i].velocity *= 0.210945021; // [km/s] to [au/year]
     }
-
     mysun.addCelObj("Sun", 333054.253182, 0, 0, 0, 0);
-    mysun.setCenterOfMass();
-    mysun.setTotalMomentum();
 
-    double time = 100.0; // years
-    double h    = 1e-2;
-    string location = "Full_Solar_System";
+    /*
+    cout << "CM_before: " << mysun.getCenterOfMass();
+    mysun.setCenterOfMass();
+    cout << "CM_after:  " << mysun.getCenterOfMass();
+    cout << "momentum_before: " << mysun.getTotalMomentum();
+    mysun.setTotalMomentum();
+    cout << "momentum_after : " << mysun.getTotalMomentum();
+    */
+
+    istringstream timeS(argv[1]);
+    istringstream hS   (argv[2]);
+    double time, h;
+    timeS >> time;
+    hS    >> h;
+    string location = argv[3];
 
     mysun.moveSystem(time, h, location);
     finish = clock();
