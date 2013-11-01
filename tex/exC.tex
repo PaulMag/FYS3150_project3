@@ -2,7 +2,7 @@
 Having written a completely general program, we are free to add as many
 celestial objects as we'd like. However, we start by looking at the Sun-Earth
 system in order to test the stability of our program as function of time step
-$dt$.
+$\D t$.
 
 In approximating Earth's orbit around the Sun as circular, we obtained our
 mass units. We apply Newton's 2nd law and his gravitational law to find at which
@@ -39,7 +39,7 @@ around the Sun is shown in figure \refig{sunEarth-dt0.01}.
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/sun_earth_T100_dt1e-2}
 	\caption{Earth's circular orbit around the Sun over a period of $T = 100$
-	 years, with time step $dt = 0.01$. The initial values are 
+	 years, with time step $\D t = 0.01$. The initial values are
 	 $\mathbf{r} = [1,0]$, $\mathbf{v} = [0,1]$.}
 	\label{fig:sunEarth-dt0.01}
 \end{figure}
@@ -68,7 +68,7 @@ conservation.
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/earth_energy_dt1e-2}
 	\caption{The kinetic, potential and total energy of the Earth over a period
-	of $T = 100$ years, with $dt = 0.01$. We see that both energy forms are
+	of $T = 100$ years, with $\D t = 0.01$. We see that both energy forms are
 	conserved.}
 	\label{fig:energycons}
 \end{figure}
@@ -90,18 +90,18 @@ shown in figure \refig{angmom}.
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/earth_angmom_dt1e-2}
 	\caption{The angular momentum of the Earth, which is conserved throughout
-	its orbit. Here shown for $T = 100$ years and $dt = 0.01$.}
+	its orbit. Here shown for $T = 100$ years and $\D t = 0.01$.}
 	\label{fig:angmom}
 \end{figure}
 %
 Let us now see what happens when we increase the time step. We increase
-$dt$ by a factor of $10$, and consider Earth's orbit as shown in figure
+$\D t$ by a factor of $10$, and consider Earth's orbit as shown in figure
 \refig{sunEarth-dt0.1}.
 %
 \begin{figure}[htpb]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/sun_earth_T100_dt1e-1_zoom}
-	\caption{Earth's orbit around the sun for a time step $dt = 0.01$. We have
+	\caption{Earth's orbit around the sun for a time step $\D t = 0.01$. We have
 	zoomed in on the original figure to better see what happens before the Earth
 	leaves orbit.}
 	\label{fig:sunEarth-dt0.1}
@@ -118,7 +118,7 @@ is included as well. See figure \refig{energyconstdt0.1}.
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/earth_energy_dt1e-1}
 	\caption{Kinetic, potential and total energy for Earth while orbiting the
-	Sun with time step $dt = 0.1$, over a course of $T = 100$ years.
+	Sun with time step $\D t = 0.1$, over a course of $T = 100$ years.
 	We have zoomed in on the relevant area.}
 	\label{fig:energyconstdt0.1}
 \end{figure}
@@ -128,30 +128,30 @@ which means that Earth is free of the Sun's gravitational pull after this
 time.
 
 This is obviously a flaw in the RK4 method. It doesn't conserve energy for any
-time step $dt$. Had we simulated the Sun-Earth system over a much longer time,
-we would have seen the same thing happen for small time steps, like $dt =
+time step $\D t$. Had we simulated the Sun-Earth system over a much longer time,
+we would have seen the same thing happen for small time steps, like $\D t =
 10^{-2}$. 
-A time step $dt = 0.1$ is big enough so that we can see the
+A time step $\D t = 0.1$ is big enough so that we can see the
 method fail in the course of 100 years. We actually need less than 10 years
 to see it fail, judging by figure \refig{energyconstdt0.1}. 
 In some ways, a \emph{symplectic integrator} such as Euler-Cromer might have 
 been better in such a simulation, because it conserves energy for any time step
-$dt$. Using Euler-Cromer instead would however have a negative effect on the
+$\D t$. Using Euler-Cromer instead would however have a negative effect on the
 accuracy.
 
-We can test how large $dt$ can be before the method fails for a time span of 100
+We can test how large $\D t$ can be before the method fails for a time span of 100
 years. By trial and error we
-find that a time step of about $dt = 5.5 \cdot 10^{-2}$ is just small enough to
+find that a time step of about $\D t = 5.5 \cdot 10^{-2}$ is just small enough to
 prevent failure. See figure \refig{sunEarth-dt5.5e-2}.
 %
 \begin{figure}[htpb]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/sun_earth_T100_dt5-5e-2}
-	\caption{Earth's orbit about the Sun with $dt = 5.5 \cdot 10^{-2}$. The
+	\caption{Earth's orbit about the Sun with $\D t = 5.5 \cdot 10^{-2}$. The
 	method is on the verge of failing for this time step. This is only valid for
 	$T < 100$ years.}
 	\label{fig:sunEarth-dt5.5e-2}
 \end{figure}
 %
-Had we increased the time step to $dt = 6 \cdot 10^{-2}$, the method would have
+Had we increased the time step to $\D t = 6 \cdot 10^{-2}$, the method would have
 failed. The limit then lies in the range $(5.5 - 6) \cdot 10^{-2}$.

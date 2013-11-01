@@ -1,7 +1,7 @@
 
 We can now add Jupiter to the system, so that we have a three-body problem. We
 want to see how much Jupiter alters Earth's motion. We choose the same
-parameters as we did for the stable orbit in the Sun-Earth system, so $dt =
+parameters as we did for the stable orbit in the Sun-Earth system, so $\D t =
 0.01$ and we simulate over a period of $T = 100$ years. Again we assume circular
 orbits, and choose initial velocities from this. The Sun-Earth-Jupiter
 system can be seen in figure \refig{sunEarthJupiter}.
@@ -10,14 +10,14 @@ system can be seen in figure \refig{sunEarthJupiter}.
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/sun_earth_jupiter_dt1e-2}
 	\caption{The Sun-Earth-Jupiter system simulated over $T = 100$ years, with
-	time step $dt = 0.01$.}
+	time step $\D t = 0.01$.}
 	\label{fig:sunEarthJupiter}
 \end{figure}
 %
 We can clearly see that Jupiter alters Earth's motion, comparing the two
 figures \refig{sunEarth-dt0.01} and \refig{sunEarthJupiter}. The orbit of Earth
 is much less restricted, resulting in some variation, depending on where Jupiter
-is at any given time. We increase the time step to $dt = 0.1$ as
+is at any given time. We increase the time step to $\D t = 0.1$ as
 we did earlier, and see that it is high enough to cause RK4 to fail for the
 Earth, while Jupiter's orbit remains unaltered. See figure
 \refig{sunEarthJupiter-dt1e-2}
@@ -25,7 +25,7 @@ Earth, while Jupiter's orbit remains unaltered. See figure
 \begin{figure}[htpb]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/sun_earth_jupiter_dt1e-1}
-	\caption{Sun-Earth-Jupiter system with $dt = 0.1$, which causes RK4 to fail
+	\caption{Sun-Earth-Jupiter system with $\D t = 0.1$, which causes RK4 to fail
 	in calculating Earth's orbit. Jupiter's orbit remains unaltered.}
 	\label{fig:sunEarthJupiter-dt1e-2}
 \end{figure}
