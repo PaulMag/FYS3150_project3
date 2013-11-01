@@ -26,7 +26,7 @@ will produce a global error proportional to $\D t^4 = 1 \cdot
 RK4 is a widely used integration scheme. It determines the next
 step in the integration from the previous value and a weighted
 average based on four different approximations found by applying
-Euler's and Euler's midpoint method.
+Euler's method and the midpoint method.
 
 In other words, provided you have the solution $\R_n$ at the
 $n$-th point. The next point $\R_{n+1}$ is found via the expression
@@ -69,11 +69,10 @@ forces acting on the object the problem can be rewritten from
 % End of rewriting into set of first order equations
 
 % On how this can be represented object oriented
-When implementing this problem, dividing the problem into objects
-and solving via object oriented programming is a wise approach. In
-this way, if the need for a simulation of many objects arises, no
-(or only very small) changes have to be done in the source code
-itself.
+When implementing this problem, dividing into objects and solving
+via object oriented programming is a wise approach. In this way, if
+the need for a simulation of many objects arises, no (or only very
+small) changes have to be done in the source code itself.
 
 This was done by creating classes to represent
 \begin{itemize}
@@ -85,3 +84,45 @@ attributes like mass, position and velocity while the system
 contained a list of the celestial objects and methods for advancing
 the system in time, finding forces and so on.
 % End of how this can be object oriented
+
+% Overview algorithm
+This lead to the following algorithm for advancing the solar system
+in time.
+\begin{algorithmic}
+    \For{t=0,dt,\dots,T}
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K1)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K1)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + \frac{1}{2}(K1)_{\V} \D t$
+        \State $\R_{\text{all}} = \R + \frac{1}{2}(K1)_{\R} \D t$
+
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K2)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K2)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + \frac{1}{2}(K2)_{\V} \D t$
+        \State $\R_{\text{all}} = \R + \frac{1}{2}(K2)_{\R} \D t$
+
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K3)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K3)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + (K3)_{\V} \D t$
+        \State $\R_{\text{all}} = \R + (K3)_{\R} \D t$
+
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K4)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K4)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + \D t\frac{1}{6}\left[
+            (K1)_{\V} + 2(K2)_{\V} + 2(K3)_{\V} + (K4)_{\V} \right]$
+        \State $\R_{\text{all}} = \R + \D t\frac{1}{6}\left[
+            (K1)_{\R} + 2(K2)_{\R} + 2(K3)_{\R} + (K4)_{\R} \right]$
+    \EndFor
+\end{algorithmic}
+% End overview algorithm
