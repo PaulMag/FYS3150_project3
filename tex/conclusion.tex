@@ -1,0 +1,7 @@
+
+We have seen that the RK4 solver gives high precision in solving systems of
+differential equation. One of the disadvantages is that the Runge-Kutta scheme
+doesn't conserve energy, which is quite noticable at high time steps. Stability
+becomes a significant problem at these time steps. One could
+then instead implement a symplectic integrator like the Euler-Cromer scheme,
+that conserves energy for any given $dt$. 
