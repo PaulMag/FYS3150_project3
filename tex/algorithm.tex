@@ -31,19 +31,19 @@ Euler's method and the midpoint method.
 In other words, provided you have the solution $\R_n$ at the
 $n$-th point. The next point $\R_{n+1}$ is found via the expression
 \[ \R_{n+1} = \R_n + \frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4), \] where 
-$k_1,k_2,k_3,k_4$ are the following approximations.
+$k_1,k_2,k_3,k_4$ are the following approximations,
 \begin{align*}
-    k_1 &= f(\R_n) \\
-    k_2 &= f(\R_n + \frac{1}{2}\D t k_1) \\
-    k_3 &= f(\R_n + \frac{1}{2}\D t k_2) \\
-    k_4 &= f(\R_n + \D t k_3)
+    k_1 &= f(\R_n), \\
+    k_2 &= f(\R_n + \frac{1}{2}\D t k_1), \\
+    k_3 &= f(\R_n + \frac{1}{2}\D t k_2), \\
+    k_4 &= f(\R_n + \D t k_3),
 \end{align*}
-Where $f(\R)$ is the right hand side of the differential equation.
+and $f(\R)$ is the right hand side of the differential equation.
 From these expression one can see that $k_1$ represent a regular
 Forward Euler step, $k_2$ is the increment at half the Forward
 Euler step (a midpoint method step), $k_3$ is also a midpoint
 method step but now from $k_2$. And lastly $k_4$ is a Forward Euler
-step from $k_3$. A weighted average of these provide an reasonable
+step from $k_3$. A weighted average of these provide a reasonable
 approximation to the next step.
 % Why does the combination of these steps provide a good
 % approximation?
@@ -119,10 +119,18 @@ in time.
             \State $(K4)_{\R} = \R_i$
         \EndFor
 
-        \State $\V_{\text{all}} = \V + \D t\frac{1}{6}\left[
-            (K1)_{\V} + 2(K2)_{\V} + 2(K3)_{\V} + (K4)_{\V} \right]$
-        \State $\R_{\text{all}} = \R + \D t\frac{1}{6}\left[
-            (K1)_{\R} + 2(K2)_{\R} + 2(K3)_{\R} + (K4)_{\R} \right]$
+        \State $\V_{\text{all}} = \V + \frac{1}{6}\left[ (K1)_{\V}
+            + 2(K2)_{\V} + 2(K3)_{\V} + (K4)_{\V} \right] \D t$
+        \State $\R_{\text{all}} = \R + \frac{1}{6}\left[ (K1)_{\R}
+            + 2(K2)_{\R} + 2(K3)_{\R} + (K4)_{\R} \right] \D t$
     \EndFor
 \end{algorithmic}
+Since each object depends on a force from all other objects, one
+cannot simply perform the integration for one object at a time ---
+when calculating the forces to find, for example $k_2$, the whole
+system has to be moved to the instance where all the objects'
+positions are moved via a Forward Euler step. This means that
+several loops through all the objects is necessary. Fortunately,
+this can be done in few lines of code provided an object oriented
+approach is chosen.
 % End overview algorithm
