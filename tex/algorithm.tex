@@ -9,10 +9,10 @@ accurate method might provide incorrect solutions and if the
 problem has exceedingly rapid changes a more stable (implicit)
 integration scheme must be considered.
 
-Considering the huge time scale, even with the scaled units. This
+Considering the huge time scale, even with the scaled units, this
 problem will not provide solutions with such rapid changes.
 Therefore it is sufficient to choose the explicit RK4 scheme. The
-local trucation error is on the order of $O(\D t^5)$ and the global
+local truncation error is on the order of $O(\D t^5)$ and the global
 error is on the order of $O(\D t^4)$. Again, considering that the
 time is of unit years, this error is small ``enough'' as to avoid
 monumental errors in the solutions.
@@ -39,7 +39,7 @@ $k_1,k_2,k_3,k_4$ are the following approximations,
     k_4 &= f(\R_n + \D t k_3),
 \end{align*}
 and $f(\R)$ is the right hand side of the differential equation.
-From these expression one can see that $k_1$ represent a regular
+From these expressions one can see that $k_1$ represent a regular
 Forward Euler step, $k_2$ is the increment at half the Forward
 Euler step (a midpoint method step), $k_3$ is also a midpoint
 method step but now from $k_2$. And lastly $k_4$ is a Forward Euler
@@ -55,7 +55,7 @@ The RK4 scheme represents a first order integration whereas the
 problem to be solved is a second order differential equation.
 Therefore, in order to use this scheme, the problem must be
 rewritten into a set of first order differential equations. These
-can then be solved in paralell throughout an interation.
+can then be solved in parallel throughout an iteration.
 
 Using the fact that the acceleration can be calculated via the
 forces acting on the object the problem can be rewritten from
@@ -82,11 +82,11 @@ This was done by creating classes to represent
 The instances of a celestial object would then contain describing
 attributes like mass, position and velocity while the system
 contained a list of the celestial objects and methods for advancing
-the system in time, finding forces and so on.
+the system in time, finding forces between the objects and so on.
 % End of how this can be object oriented
 
 % Overview algorithm
-This lead to the following algorithm for advancing the solar system
+This leads to the following algorithm for advancing the solar system
 in time.
 \begin{algorithmic}
     \For{t=0,dt,\dots,T}
