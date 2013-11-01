@@ -24,3 +24,6 @@ make*
 
 # Stupid swap files
 *.swp
+
+# Weird mac files
+*.DS_Store
