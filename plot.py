@@ -14,27 +14,32 @@ N = len(names)
 
 infile.close()
 
+# If you don't want to plot every step:
+#resolution = 0.003
+#skip = int( round( resolution / (time / n) ) )
+skip = 1
+
 positions = np.zeros((N, n, dim))
 
 for i in range(N):
     infile = open("data/%s/obj%d.dat" % (folder,i), "r")
 
-    for j in range(n):
+    for j in range(0, n):
         line = infile.readline().split(",")
         for k in range(dim):
             positions[i,j,k] = float(line[k])
 
     infile.close()
 
-
 plt.figure()
-plt.title(folder + ", time = %g years, h = %g years" % (time, time/n))
+plt.title(folder.split("__")[0] + \
+          ", time = %g years, dt = %g years" % (time, time/n))
 plt.axis("equal")
 plt.xlabel("x [AU]"); plt.ylabel("y [AU]")
 plt.grid('on')
 
 for i in range(N):
-    plt.plot( positions[i,:,0], positions[i,:,1] )
+    plt.plot( positions[i,::skip,0], positions[i,::skip,1] )
 plt.legend( names, loc="best" )
 
 plt.show()

@@ -11,13 +11,118 @@ integration scheme must be considered.
 
 Considering the huge time scale, even with the scaled units. This
 problem will not provide solutions with such rapid changes.
-Therefore it is sufficient to choose the RK4 scheme. The local
-trucation error is on the order of $O(\D t^5)$ and the global error
-is on the order of $O(\D t^4)$. Again, considering that the time is
-of unit years, this error is small ``enough'' as to avoid
+Therefore it is sufficient to choose the explicit RK4 scheme. The
+local trucation error is on the order of $O(\D t^5)$ and the global
+error is on the order of $O(\D t^4)$. Again, considering that the
+time is of unit years, this error is small ``enough'' as to avoid
 monumental errors in the solutions.
 
 This means that for example choosing $\D t = 1 \cdot 10^{-2}$ years
 will produce a global error proportional to $\D t^4 = 1 \cdot
 10^{-8}$ years which is approximately 0.32 seconds.
 % End choice of numerical method
+
+% How does the method work
+RK4 is a widely used integration scheme. It determines the next
+step in the integration from the previous value and a weighted
+average based on four different approximations found by applying
+Euler's method and the midpoint method.
+
+In other words, provided you have the solution $\R_n$ at the
+$n$-th point. The next point $\R_{n+1}$ is found via the expression
+\[ \R_{n+1} = \R_n + \frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4), \] where 
+$k_1,k_2,k_3,k_4$ are the following approximations.
+\begin{align*}
+    k_1 &= f(\R_n) \\
+    k_2 &= f(\R_n + \frac{1}{2}\D t k_1) \\
+    k_3 &= f(\R_n + \frac{1}{2}\D t k_2) \\
+    k_4 &= f(\R_n + \D t k_3)
+\end{align*}
+Where $f(\R)$ is the right hand side of the differential equation.
+From these expression one can see that $k_1$ represent a regular
+Forward Euler step, $k_2$ is the increment at half the Forward
+Euler step (a midpoint method step), $k_3$ is also a midpoint
+method step but now from $k_2$. And lastly $k_4$ is a Forward Euler
+step from $k_3$. A weighted average of these provide an reasonable
+approximation to the next step.
+% Why does the combination of these steps provide a good
+% approximation?
+%
+% End of how the method works
+
+% On the rewriting into set of first order equations
+The RK4 scheme represents a first order integration whereas the
+problem to be solved is a second order differential equation.
+Therefore, in order to use this scheme, the problem must be
+rewritten into a set of first order differential equations. These
+can then be solved in paralell throughout an interation.
+
+Using the fact that the acceleration can be calculated via the
+forces acting on the object the problem can be rewritten from
+\refeq{newtonDifferential} into
+\begin{align}
+    \frac{\D \mathbf{r}}{\D t} &= \mathbf{v}, \label{diffSetFirstR} \\
+    \frac{\D \mathbf{v}}{\D t} &= \mathbf{a} = \frac{\Sigma
+        \mathbf{F}}{M}.
+    \label{diffSetFirstV}
+\end{align}
+% End of rewriting into set of first order equations
+
+% On how this can be represented object oriented
+When implementing this problem, dividing into objects and solving
+via object oriented programming is a wise approach. In this way, if
+the need for a simulation of many objects arises, no (or only very
+small) changes have to be done in the source code itself.
+
+This was done by creating classes to represent
+\begin{itemize}
+    \item A celestial object
+    \item A whole system
+\end{itemize}
+The instances of a celestial object would then contain describing
+attributes like mass, position and velocity while the system
+contained a list of the celestial objects and methods for advancing
+the system in time, finding forces and so on.
+% End of how this can be object oriented
+
+% Overview algorithm
+This lead to the following algorithm for advancing the solar system
+in time.
+\begin{algorithmic}
+    \For{t=0,dt,\dots,T}
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K1)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K1)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + \frac{1}{2}(K1)_{\V} \D t$
+        \State $\R_{\text{all}} = \R + \frac{1}{2}(K1)_{\R} \D t$
+
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K2)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K2)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + \frac{1}{2}(K2)_{\V} \D t$
+        \State $\R_{\text{all}} = \R + \frac{1}{2}(K2)_{\R} \D t$
+
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K3)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K3)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + (K3)_{\V} \D t$
+        \State $\R_{\text{all}} = \R + (K3)_{\R} \D t$
+
+        \For{i=Sun,Earth,\dots,Pluto}
+            \State $(K4)_{\V} = \frac{\Sigma \mathbf{F}_i}{M_i}$
+            \State $(K4)_{\R} = \R_i$
+        \EndFor
+
+        \State $\V_{\text{all}} = \V + \D t\frac{1}{6}\left[
+            (K1)_{\V} + 2(K2)_{\V} + 2(K3)_{\V} + (K4)_{\V} \right]$
+        \State $\R_{\text{all}} = \R + \D t\frac{1}{6}\left[
+            (K1)_{\R} + 2(K2)_{\R} + 2(K3)_{\R} + (K4)_{\R} \right]$
+    \EndFor
+\end{algorithmic}
+% End overview algorithm
