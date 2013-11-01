@@ -27,3 +27,6 @@ make*
 
 # Weird mac files
 *.DS_Store
+
+# Data files
+*.dat
