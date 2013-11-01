@@ -1,7 +1,11 @@
-
 We have seen that the RK4 solver gives high precision in solving systems of
 differential equation. One of the disadvantages is that the Runge-Kutta scheme
 doesn't conserve energy, which is quite noticable at high time steps. Stability
 becomes a significant problem at these time steps. One could
 then instead implement a symplectic integrator like the Euler-Cromer scheme,
-that conserves energy for any given $dt$. 
+which conserves energy for any given $\D t$.
+
+\bilde{figures/system_unstable_inner.eps}{fig:system_unstable_inner}{Only the innermost planet is unstable.}
+A problem related to computation resources needed is that the stability of the different planets varies. Planets that are closer to the sun have greater accelerations and velocities, which makes numerical errors more likely to occur. In the section about stability it was always Earth who ran away, not Jupiter. In figure \refig{system_unstable_inner} is an example with a large timestep where Mercury is highly unstable, while all other planets have stable orbits. This can be solved by reducing $\D t$, but then we are wasting computation power on the outer planets. Ideally, different timesteps should be used for the different celestial objects to make the program as efficient as possible. This would of course lead to great implications, as the system needs to be forwarded as a whole, but maybe it is possible with some smart tricks.
+
+During this problem we have experienced how time consuming debugging of essentially trivial things can be. The physics and essence of the algorithm was quite simple, but we got stuck in mystical bugs, scaling problems and simple typing errors several times, and it was such things that consumed most of our time. A clear problam flow, version control and cooperation has proven to be very useful.
