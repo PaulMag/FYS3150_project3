@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
 
     /* Data collected from:
      * http://nssdc.gsfc.nasa.gov/planetary/factsheet/planet_table_ratio.html
-     * Planets initial positions relative to eachother are arbitrary,
+     * Planets' initial positions relative to eachother are arbitrary,
      * but position and velocity relative to Sun should be correct.
      */
 
@@ -47,14 +47,8 @@ int main(int argc, char* argv[]) {
     }
     mysun.addCelObj("Sun", 333054.253182, 0, 0, 0, 0);
 
-    /*
-    cout << "CM_before: " << mysun.getCenterOfMass();
-    mysun.setCenterOfMass();
-    cout << "CM_after:  " << mysun.getCenterOfMass();
-    cout << "momentum_before: " << mysun.getTotalMomentum();
-    mysun.setTotalMomentum();
-    cout << "momentum_after : " << mysun.getTotalMomentum();
-    */
+    mysun.setCenterOfMass();  // Place CM in origo
+    mysun.setTotalMomentum(); // Set v_CM = 0
 
     istringstream timeS(argv[1]);
     istringstream hS   (argv[2]);
